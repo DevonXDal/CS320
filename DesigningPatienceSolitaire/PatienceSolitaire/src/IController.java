@@ -13,7 +13,7 @@ public interface IController {
      * Accepts commands that could not be identified at the command line level to handle. If the command can be carried out
      * as per game rules, it will be.
      *
-     * Why: This provides a way that the API can communicate with the controller. Without it, the API would not being able
+     * Why: This provides a way that the command line can communicate with the controller. Without it, the command line would not being able
      * to send input to the controller due to the interface and testing the command line would be harder.
      *
      * @param command The command object that provides the command and its arguments to be handled

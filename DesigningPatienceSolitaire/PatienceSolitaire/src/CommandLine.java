@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * @author Devon X. Dalrymple
  * @version 2022-02-22
  */
-public class CommandLine {
+public class CommandLine implements ICommandLine {
     private InputStream inputStream;
     private OutputStream outputStream;
     private IController controller;
