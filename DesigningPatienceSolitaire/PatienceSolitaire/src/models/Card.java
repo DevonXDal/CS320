@@ -1,5 +1,8 @@
 package models;
 
+import models.enumerations.Rank;
+import models.enumerations.Suit;
+
 /**
  * This models.Card class represents a playing card. Playing cards can be face up or face down with face up cards
  * revealing what rank and suit the cards have. Playing cards contain a rank and a suit.
@@ -39,7 +42,7 @@ public class Card {
     }
 
     /**
-     * Returns the name of the card in the format of "{models.Rank} of {models.Suit}" if the card is visible (face up). Otherwise,
+     * Returns the name of the card in the format of "{models.enumerations.Rank} of {models.enumerations.Suit}" if the card is visible (face up). Otherwise,
      * it will return the name as "Unknown models.Card".
      *
      * @return The name of the card.
@@ -50,7 +53,7 @@ public class Card {
     }
 
     /**
-     * Returns the abbreviated name of the card in the format of "{models.Rank.asAbbreviation()}{models.Suit.asUnicodeCharacter()}"
+     * Returns the abbreviated name of the card in the format of "{models.enumerations.Rank.asAbbreviation()}{models.enumerations.Suit.asUnicodeCharacter()}"
      * if the card is visible (face up). Otherwise,
      * it will return the name as "UC".
      *

@@ -1,4 +1,4 @@
-package models;
+package models.enumerations;
 
 /**
  * DO NOT ALTER THE ORDER OF WHICH THESE APPEAR
