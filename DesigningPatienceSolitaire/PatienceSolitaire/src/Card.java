@@ -46,4 +46,15 @@ public class Card {
     public String toString() {
         return null;
     }
+
+    /**
+     * Returns the abbreviated name of the card in the format of "{Rank.asAbbreviation()}{Suit.asUnicodeCharacter()}"
+     * if the card is visible (face up). Otherwise,
+     * it will return the name as "UC".
+     *
+     * @return The abbreviated name of the card.
+     */
+    public String toAbbreviatedString() {
+        return null;
+    }
 }

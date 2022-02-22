@@ -8,5 +8,14 @@
  * @version 2022-01-17
  */
 public enum Rank {
-    Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
+    Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King;
+
+    /**
+     * Returns the one or two letter abbreviation representing the selected rank.
+     *
+     * @return The abbreviation of the selected rank
+     */
+    public String asAbbreviation() {
+        return null;
+    }
 }

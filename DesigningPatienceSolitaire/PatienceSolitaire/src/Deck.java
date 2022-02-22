@@ -47,6 +47,6 @@ public class Deck {
     /**
      * Randomize the positions of the cards in the deck
      */
-    private void shuffle() { }
+    public void shuffle() { }
 
 }

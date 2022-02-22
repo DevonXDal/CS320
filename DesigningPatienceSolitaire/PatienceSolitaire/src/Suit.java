@@ -7,5 +7,14 @@
  * @version 2022-01-17
  */
 public enum Suit {
-    Diamonds, Clubs, Hearts, Spades
+    Diamonds, Clubs, Hearts, Spades;
+
+    /**
+     * Returns the unicode character shape of the suit.
+     *
+     * @return The unicode character for the selected suit
+     */
+    public char asUnicodeCharacter() {
+        return 'a';
+    }
 }
