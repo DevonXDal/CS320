@@ -2,7 +2,7 @@
  * The IController class provides a contract that game controllers for the game Patience Solitaire are expected to implement.
  *
  * Why: This allows the project to better follow the dependency-inversion principle for larger moving pieces and to
- * allow mock controllers to be implemented so that testing is feasible.
+ * allow mock controllers to be implemented so that testing the command line is feasible.
  *
  * @author Devon X. Dalrymple
  * @version 2022-02-21
