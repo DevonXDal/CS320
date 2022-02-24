@@ -14,7 +14,7 @@ import java.util.List;
  * @author Devon X. Dalrymple
  * @version 2022-02-24
  */
-public class WastePile {
+public class WastePile extends SelectablePile{
 
     /**
      * Removes and returns all the cards from the waste pile in the order that they were in, in the waste pile (bottom to top).
