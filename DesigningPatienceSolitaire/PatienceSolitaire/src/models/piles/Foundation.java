@@ -7,7 +7,7 @@ import models.Card;
  * player. The win condition is also checked using foundation objects.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-21
+ * @version 2022-02-24
  */
 public class Foundation extends SelectablePile {
 

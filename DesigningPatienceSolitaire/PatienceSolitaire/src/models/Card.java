@@ -8,7 +8,7 @@ import models.enumerations.Suit;
  * revealing what rank and suit the cards have. Playing cards contain a rank and a suit.
  *
  * @author Devon X. Dalrymple
- * @version 2022-01-17
+ * @version 2022-02-24
  */
 public class Card {
     private Rank rank;

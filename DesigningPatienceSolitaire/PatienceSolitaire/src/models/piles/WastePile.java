@@ -2,18 +2,17 @@ package models.piles;
 
 import models.Card;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
  * This models.piles.WastePile class represents the waste/discard pile of cards used in Patience Solitaire that receives cards from the
  * deck and is refilled into the deck.
  *
- * Why: This class is different from the other models.piles because it can have all of its cards removed and returned from it at
+ * Why: This class is different from the other piles because it can have all of its cards removed and returned from it at
  * once.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-24
  */
 public class WastePile {
 

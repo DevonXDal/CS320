@@ -14,7 +14,7 @@ import java.util.Map;
  * own display generation.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-24
  */
 public class Table {
     private Deck deck;
@@ -28,7 +28,6 @@ public class Table {
     public Table() {
 
     }
-
 
     /**
      * Returns the deck that is being used
