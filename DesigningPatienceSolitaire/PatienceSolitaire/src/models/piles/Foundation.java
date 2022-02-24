@@ -37,4 +37,14 @@ public class Foundation extends SelectablePile {
     public boolean checkFoundationCompleted() {
         return false;
     }
+
+    /**
+     * Returns the representation of the foundation in this Patience Solitaire. This is "[??]", where the question marks
+     * represent the abbreviated two or three characters used to represent the top card. If no card is in the foundation,
+     * then it appears as "[  ]"
+     */
+    @Override
+    public String toString() {
+        return null;
+    }
 }

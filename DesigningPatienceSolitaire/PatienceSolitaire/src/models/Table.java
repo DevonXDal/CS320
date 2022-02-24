@@ -54,7 +54,8 @@ public class Table {
      *
      * @return The current state of the table represented by text
      */
-    public String generateTableRepresentation() {
+    @Override
+    public String toString() {
         return null;
     }
 }

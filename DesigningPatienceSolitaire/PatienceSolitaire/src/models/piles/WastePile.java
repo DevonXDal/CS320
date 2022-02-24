@@ -3,6 +3,7 @@ package models.piles;
 import models.Card;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This models.piles.WastePile class represents the waste/discard pile of cards used in Patience Solitaire that receives cards from the
@@ -23,7 +24,16 @@ public class WastePile {
      *
      * @return The cards from the waste pile from bottom to top
      */
-    public Collection<Card> removeAll() {
+    public List<Card> removeAll() {
+        return null;
+    }
+
+    /**
+     * Returns the representation of the waste pile in this Patience Solitaire. This is "[??]", where the question marks
+     * represent the abbreviated two or three characters used to represent the top card. If no card is in the waste pile,
+     * then it appears as "[  ]"
+     */
+    public String toString() {
         return null;
     }
 }

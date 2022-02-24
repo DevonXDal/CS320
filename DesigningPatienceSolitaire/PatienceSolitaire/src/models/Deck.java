@@ -41,16 +41,26 @@ public class Deck {
     }
 
     /**
-     * Adds cards one at a time from the beginning of the list until the end to the top of the deck.
+     * Adds cards to the deck in the inverted order of which they came in. It also places these cards face down.
      * This is necessary to refill the cards from the discard pile into the deck in Patience Solitaire.
      *
      * @param newCards The cards to insert to the top of the deck one at a time in order.
      */
-    public void insertCardsInMaintainedOrder(List newCards) { }
+    public void insertCardsInInvertedOrder(List newCards) { }
 
     /**
      * Randomize the positions of the cards in the deck
      */
     public void shuffle() { }
 
+    /**
+     * Returns the deck in the representational form for this Patience Solitaire as [#]. Where # is the number of cards
+     * remaining in the deck.
+     *
+     * @return [] with the number of cards in the deck inside
+     */
+    @Override
+    public String toString() {
+        return null;
+    }
 }

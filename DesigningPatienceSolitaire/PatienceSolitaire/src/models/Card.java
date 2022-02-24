@@ -41,11 +41,13 @@ public class Card {
         return null;
     }
 
+
     /**
-     * Returns the name of the card in the format of "{models.enumerations.Rank} of {models.enumerations.Suit}" if the card is visible (face up). Otherwise,
-     * it will return the name as "Unknown models.Card".
+     * Returns the abbreviated name of the card in the format of "{Rank.asAbbreviation()}{Suit.asUnicodeCharacter()}"
+     * if the card is visible (face up). Otherwise,
+     * it will return the name as "UC".
      *
-     * @return The name of the card.
+     * @return The abbreviated name of the card.
      */
     @Override
     public String toString() {
@@ -53,13 +55,12 @@ public class Card {
     }
 
     /**
-     * Returns the abbreviated name of the card in the format of "{models.enumerations.Rank.asAbbreviation()}{models.enumerations.Suit.asUnicodeCharacter()}"
-     * if the card is visible (face up). Otherwise,
-     * it will return the name as "UC".
+     * Returns the name of the card in the format of "{Rank} of {Suit}" if the card is visible (face up). Otherwise,
+     * it will return the name as "Unknown Card".
      *
-     * @return The abbreviated name of the card.
+     * @return The name of the card.
      */
-    public String toAbbreviatedString() {
+    public String toFullName() {
         return null;
     }
 }
