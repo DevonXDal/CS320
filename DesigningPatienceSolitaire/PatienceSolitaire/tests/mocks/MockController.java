@@ -1,3 +1,5 @@
+package mocks;
+
 import controller.IController;
 import other.Command;
 
