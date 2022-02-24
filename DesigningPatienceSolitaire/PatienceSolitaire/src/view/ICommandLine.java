@@ -55,4 +55,10 @@ public interface ICommandLine {
      * @param updateInformation The text to be printed to the screen for the user to see
      */
     void printGameUpdate(String updateInformation);
+
+    /**
+     * When called, this will display a simple message saying that the player has won the game shortly before the controller
+     * starts a new game/round for the person to play.
+     */
+    void printWinMessage();
 }
