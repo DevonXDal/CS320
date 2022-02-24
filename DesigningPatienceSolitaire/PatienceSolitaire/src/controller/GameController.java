@@ -10,12 +10,13 @@ import view.ICommandLine;
  * It controls the actions taken by the other classes and makes what the other classes do actually useful.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-24
  */
 public class GameController implements IController {
     private Table table;
     private ICommandLine userInterface;
     private Player player;
+    private boolean isGameLoopContinuing; // If this becomes false, the game loop will end when it next starts the loop.
 
     /**
      * Creates a new controller.GameController object with the command line, player, and table being set up by the contoller itself.

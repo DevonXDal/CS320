@@ -41,6 +41,16 @@ public class Card {
         return null;
     }
 
+    /**
+     * Shows the card, making it face-up. This allows the card's name to be seen. Otherwise, it would be unknown.
+     */
+    public void show() {}
+
+    /**
+     * Hides the card, making it face-down. This has the card appear as 'Unknown Card' or 'UC' instead of its name.
+     */
+    public void hide() {}
+
 
     /**
      * Returns the abbreviated name of the card in the format of "{Rank.asAbbreviation()}{Suit.asUnicodeCharacter()}"
