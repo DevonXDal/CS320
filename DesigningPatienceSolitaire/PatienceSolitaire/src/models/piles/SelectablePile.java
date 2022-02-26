@@ -28,6 +28,8 @@ public abstract class SelectablePile {
      * Adds a card to the end of the list. Rules for the card is not checked and must be done separately.
      * Duplicates are checked when the card is added and the new card will never make it to the list if it is a duplicate.
      * Does not throw an exception, if a duplicate is found, it is simply dropped as a form of error correction.
+     * The card is added to the end of the list. This could be handled as either the top or bottom card as desired by the
+     * concrete class.
      *
      * @param cardToAdd The card to be appended to the end of the list
      */
@@ -47,7 +49,7 @@ public abstract class SelectablePile {
     /**
      * Returns but does not remove the card at the end of the list. Returns null if no cards are in the list.
      *
-     * Why: This method is use to view which card the user has selected and to aid in testing whether a card can be legally moved
+     * Why: This method is used to view which card the user has selected and to aid in testing whether a card can be legally moved
      * to a destination.
      *
      * @return The most recently added card

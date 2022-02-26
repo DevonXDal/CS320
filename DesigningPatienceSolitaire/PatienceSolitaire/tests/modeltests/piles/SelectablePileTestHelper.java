@@ -10,8 +10,11 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 /**
- * This itself is not a test class to test a certain concrete class. This is meant to provides a means to test the concrete classes
- * of the SelectablePile abstract class
+ * This itself is not a test class to test a certain concrete class. This is meant to provide a means to test the concrete classes
+ * of the SelectablePile abstract class. It does not test move legality as that is implementation specific.
+ *
+ * @author Devon X. Dalrymple
+ * @version 2022-02-26
  */
 public class SelectablePileTestHelper {
     private SelectablePile pile;
@@ -25,9 +28,11 @@ public class SelectablePileTestHelper {
         classBeingTested = pile.getClass();
     }
 
-    /**
+    /*
      * Sets up the concrete object for use in tests, using the declared constructor of the subclass,
      * this requires the default constructor to be implemented for the subclass
+     *
+     * Other than the creation of the object, nothing else happens at this stage
      *
      * https://stackoverflow.com/questions/6094575/creating-an-instance-using-the-class-name-and-calling-constructor
      */
@@ -49,14 +54,28 @@ public class SelectablePileTestHelper {
      * implementation.
      */
     public void runAbstractClassImplementationTests() {
+        constructorTest();
         addCardTest();
         addCardNoDuplicatesTest();
+        viewCardTest();
+        removeCardTest();
     }
 
-    /*
+    /**
+     * Tests that the new selectable pile starts off as empty
+     */
+    public void constructorTest() {
+        setUp();
+
+        assertNull("The empty pile was not empty with the implementation: " + classBeingTested, pile.viewCard());
+    }
+
+    /**
      * Tests the addCard() implementation for concrete classes. Ensures that no verification is done and that the card is added correctly.
      */
-    private void addCardTest() {
+    public void addCardTest() {
+        setUp();
+
         for (Rank rank : Rank.values()) {
             for (Suit suit : Suit.values()) {
                 try {
@@ -73,10 +92,12 @@ public class SelectablePileTestHelper {
         }
     }
 
-    /*
+    /**
      * Tests the addCard() implementation for concrete classes. Ensures that no verification is done and that the card is added correctly.
      */
-    private void addCardNoDuplicatesTest() {
+    public void addCardNoDuplicatesTest() {
+        setUp();
+
         Rank randomRank = generateRandomRank();
         Suit randomSuit = generateRandomSuit();
 
@@ -88,6 +109,49 @@ public class SelectablePileTestHelper {
                 pile.removeCard());
         assertNull("Duplicates were detected during the duplicate test for the implementation: " + classBeingTested,
                 pile.removeCard());
+
+    }
+
+    /**
+     * Tests that the removeCard() implementation both removes and returns a card from its list. It also checks that null is returned
+     * for when the implementation is empty.
+     */
+    public void removeCardTest() {
+        setUp();
+
+        Rank randomRank = generateRandomRank();
+        Suit randomSuit = generateRandomSuit();
+
+        pile.addCard(new Card(randomRank, randomSuit));
+
+        Card insertedCard = pile.removeCard();
+        Card shouldBeNull = pile.removeCard();
+
+        assertEquals("Rank issue; The wrong card was returned when removing a card for implementation: " + classBeingTested, randomRank, insertedCard.getRank());
+        assertEquals("Suit issue; The wrong card was returned when removing a card for implementation: " + classBeingTested, randomSuit, insertedCard.getSuit());
+        assertNull(shouldBeNull);
+
+    }
+
+    /**
+     * Tests that the viewCard() implementation returns but does not remove the card from its list. It also checks that null
+     * is returned when the pile is empty.
+     */
+    public void viewCardTest() {
+        setUp();
+
+        Rank randomRank = generateRandomRank();
+        Suit randomSuit = generateRandomSuit();
+
+        pile.addCard(new Card(randomRank, randomSuit));
+
+        Card currentlyObservedCard = pile.viewCard();
+        assertEquals("Rank issue; The wrong card was returned when viewing a card for implementation: " + classBeingTested, randomRank, currentlyObservedCard.getRank());
+        assertEquals("Suit issue; The wrong card was returned when viewing a card for implementation: " + classBeingTested, randomSuit, currentlyObservedCard.getSuit());
+
+        currentlyObservedCard = pile.viewCard();
+        assertEquals("Rank issue; A different card was returned when viewing a card for implementation: " + classBeingTested, randomRank, currentlyObservedCard.getRank());
+        assertEquals("Suit issue; A different card was returned when viewing a card for implementation: " + classBeingTested, randomSuit, currentlyObservedCard.getSuit());
 
     }
 
