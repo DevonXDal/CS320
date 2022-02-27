@@ -3,6 +3,7 @@ package models;
 import models.Deck;
 import models.piles.SelectablePile;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ public class Table {
      * arguments to their related models.piles that can be selectable.
      */
     public Table() {
-
+        selectablePiles = new LinkedHashMap<>(); // This was added before testing was completed so that it would not be forgotten
     }
 
     /**

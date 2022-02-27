@@ -11,6 +11,12 @@ import other.GeneralTestHelper;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests the Foundation class to ensure that it is implemented correctly.
+ *
+ * @author Devon X. Dalrymple
+ * @version 2022-02-26
+ */
 public class FoundationTest {
     private Foundation foundation;
 

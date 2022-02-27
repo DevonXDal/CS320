@@ -17,6 +17,17 @@ import java.util.List;
 public class WastePile extends SelectablePile{
 
     /**
+     * Adds the card like other selectable piles but it also turns the card so that the card is face-up.
+     *
+     * @param cardToAdd The card to be appended to the end of the list
+     */
+    @Override
+    public void addCard(Card cardToAdd) {
+        cardToAdd.show();
+        super.addCard(cardToAdd);
+    }
+
+    /**
      * Removes and returns all the cards from the waste pile in the order that they were in, in the waste pile (bottom to top).
      *
      * Why: This method exists in order to refill the stock/deck with cards when empty like the waste would in the actual game.

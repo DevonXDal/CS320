@@ -37,6 +37,18 @@ public class WastePileTest {
     }
 
     /**
+     * Tests that the waste pile adds the card face up.
+     */
+    @Test
+    public void visibleCardWhenAddingTest() {
+        Card card = new Card(GeneralTestHelper.generateRandomRank(), GeneralTestHelper.generateRandomSuit());
+
+        wastePile.addCard(card);
+
+        assertNotEquals("UC", wastePile.viewCard().toString());
+    }
+
+    /**
      * Tests that the removeAll() method for the waste pile works as intended.
      */
     @Test
