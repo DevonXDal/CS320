@@ -6,6 +6,7 @@ import models.enumerations.Rank;
 import models.enumerations.Suit;
 import org.junit.Before;
 import org.junit.Test;
+import other.GeneralTestHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +26,8 @@ import static org.junit.Assert.*;
  * or of just differing suits)
  * III.	deck.createDeck()
  * card = deck.draw()
- * card.toString == “Ace of {suit}”
- * card2 = deck.draw()
- * card2.getRank() == Rank.Two
- * card2.getSuit() == card.getSuit()
+ * card.show()
+ * card.toFullName() == “Ace of Diamonds”
  * Repeat to verify all 13 ranks appear for each suit
  * deck.size() == 0
  * IV.	deck.createDeck()
@@ -117,6 +116,26 @@ public class DeckTest {
     }
 
     /**
+     * Tests that the deck is created with the right cards, in the right order
+     *
+     * Relevant Axioms:
+     * III.	deck.createDeck()
+     * card = deck.draw()
+     * card.show()
+     * card.toFullName() == “Ace of Diamonds”
+     * Repeat to verify all 13 ranks appear for each suit
+     * deck.size() == 0
+     */
+    @Test
+    public void newDeckHasCorrectCardsInCorrectOrder() {
+        Card[] cardsToCompare = GeneralTestHelper.getAllPlayingCardsOrderedBySuitThenRank();
+
+        for (int i = cardsToCompare.length - 1; i >= 0; i--) {
+            assertEquals(cardsToCompare[i].toFullName(), deck.draw().toFullName());
+        }
+    }
+
+    /**
      * Tests that drawing a card decreases the size of the deck appropriately.
      *
      * Relevant Axioms:
@@ -180,9 +199,23 @@ public class DeckTest {
         for (int i = 0; i < listToRefillFrom.size(); i++) {
             assertEquals("These cards are not the same when comparing ordering",
                     listToRefillFrom.get(i), listToCheckForInvertedOrder.get(i)); // This will compare the memory address, which should be the same.
-            assertTrue("The card was not hidden when refilled", listToCheckForInvertedOrder.get(i).equals("UC"));
+            assertEquals("The card was not hidden when refilled", "UC", listToCheckForInvertedOrder.get(i).toString());
         }
 
 
+    }
+
+    /**
+     * Tests that the deck display represents the number of cards left in the deck correctly
+     *
+     * Relevant Axioms:
+     * VI.	Any deck the has been created
+     * deck.toString() == [#] where # is the number of cards in the deck
+     */
+    @Test
+    public void toStringTest() {
+        for (int i = 52; i > 0; i--) {
+            assertEquals("[" + i + "]", deck.toString());
+        }
     }
 }
