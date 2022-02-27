@@ -6,7 +6,7 @@ import models.piles.SelectablePile;
  * This models.Player class represents the player, or more specifically the player's hand. When a card is selected by the player
  * through the command line to move using, the player class is used to keep track of it.
  *
- * @author Devon X. Dalrymplr
+ * @author Devon X. Dalrymple
  * @version 2022-02-22
  */
 public class Player {

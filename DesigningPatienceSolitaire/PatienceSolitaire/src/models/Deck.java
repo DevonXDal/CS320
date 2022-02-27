@@ -42,7 +42,8 @@ public class Deck {
 
     /**
      * Adds cards to the deck in the inverted order of which they came in. It also places these cards face down.
-     * This is necessary to refill the cards from the discard pile into the deck in Patience Solitaire.
+     *
+     * Why: This is necessary to refill the cards from the discard pile into the deck in Patience Solitaire.
      *
      * @param newCards The cards to insert to the top of the deck one at a time in order.
      */
