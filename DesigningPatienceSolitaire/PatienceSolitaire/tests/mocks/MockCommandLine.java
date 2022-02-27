@@ -41,4 +41,9 @@ public class MockCommandLine implements ICommandLine {
     public void printGameUpdate(String updateInformation) {
 
     }
+
+    @Override
+    public void printWinMessage() {
+
+    }
 }
