@@ -4,6 +4,7 @@ import models.Card;
 import models.enumerations.Rank;
 import models.enumerations.Suit;
 import models.piles.SelectablePile;
+import other.GeneralTestHelper;
 
 import java.util.Random;
 
@@ -19,6 +20,9 @@ import static org.junit.Assert.*;
 public class SelectablePileTestHelper {
     private SelectablePile pile;
     private Class<? extends SelectablePile> classBeingTested;
+
+    Rank randomRank;
+    Suit randomSuit;
 
     /**
      * Non-default constructor of the unit test, used to test a specific implementation
@@ -41,6 +45,9 @@ public class SelectablePileTestHelper {
         try
         {
             pile = classBeingTested.getDeclaredConstructor().newInstance();
+
+            randomRank = GeneralTestHelper.generateRandomRank();
+            randomSuit = GeneralTestHelper.generateRandomSuit();
         }
         catch (Exception exception)
         {
@@ -98,9 +105,6 @@ public class SelectablePileTestHelper {
     public void addCardNoDuplicatesTest() {
         setUp();
 
-        Rank randomRank = generateRandomRank();
-        Suit randomSuit = generateRandomSuit();
-
         for (int i = 1; i < 4; i++) {
             pile.addCard(new Card(randomRank, randomSuit));
         }
@@ -118,9 +122,6 @@ public class SelectablePileTestHelper {
      */
     public void removeCardTest() {
         setUp();
-
-        Rank randomRank = generateRandomRank();
-        Suit randomSuit = generateRandomSuit();
 
         pile.addCard(new Card(randomRank, randomSuit));
 
@@ -140,9 +141,6 @@ public class SelectablePileTestHelper {
     public void viewCardTest() {
         setUp();
 
-        Rank randomRank = generateRandomRank();
-        Suit randomSuit = generateRandomSuit();
-
         pile.addCard(new Card(randomRank, randomSuit));
 
         Card currentlyObservedCard = pile.viewCard();
@@ -155,19 +153,5 @@ public class SelectablePileTestHelper {
 
     }
 
-    // https://stackoverflow.com/questions/609860/convert-from-enum-ordinal-to-enum-type - For converting ordinal back to enum
-    // Returns a randomly generated rank
-    private Rank generateRandomRank() {
-        Random rand = new Random();
 
-        return Rank.values()[rand.nextInt(Rank.values().length)];
-    }
-
-    // https://stackoverflow.com/questions/609860/convert-from-enum-ordinal-to-enum-type - For converting ordinal back to enum
-    // Returns a randomly generated suit
-    private Suit generateRandomSuit() {
-        Random rand = new Random();
-
-        return Suit.values()[rand.nextInt(Suit.values().length)];
-    }
 }
