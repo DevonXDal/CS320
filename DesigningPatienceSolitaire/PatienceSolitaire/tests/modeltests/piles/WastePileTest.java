@@ -74,9 +74,6 @@ public class WastePileTest {
         }
     }
 
-
-    // toString()
-
     /**
      * Tests that the waste pile displays itself appropriately
      */
@@ -84,10 +81,10 @@ public class WastePileTest {
     public void toStringTest() {
         Card randomCard = GeneralTestHelper.generateRandomCard();
 
-        assertEquals("The empty waste pile did not generate its string correctly", "[  ]", randomCard);
+        assertEquals("The empty waste pile did not generate its string correctly", "[  ]", randomCard.toString());
 
         wastePile.addCard(randomCard);
 
-        assertEquals("The waste pile did not generate its string correctly", "[" + randomCard + "]", randomCard);
+        assertEquals("The waste pile did not generate its string correctly", "[" + randomCard + "]", randomCard.toString());
     }
 }
