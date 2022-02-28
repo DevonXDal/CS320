@@ -17,6 +17,17 @@ public enum Suit {
      * @return The unicode character for the selected suit
      */
     public char asUnicodeCharacter() {
-        return 'a';
+        switch (this) {
+            case Diamonds:
+                return '♢';
+            case Clubs:
+                return '♧';
+            case Hearts:
+                return '♡';
+            case Spades:
+                return '♤';
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }
