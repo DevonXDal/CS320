@@ -21,7 +21,12 @@ public class Card {
      * @param rank The alphanumeric character found on a playing card represented as an enumeration.
      * @param suit The shape found on a playing card represented as an enumeration.
      */
-    public Card(Rank rank, Suit suit) { }
+    public Card(Rank rank, Suit suit) {
+        this.rank = rank;
+        this.suit = suit;
+
+        isVisible = false;
+    }
 
     /**
      * Gets the card's rank.
@@ -29,7 +34,7 @@ public class Card {
      * @return The alphanumeric character found on a playing card represented as an enumeration.
      */
     public Rank getRank() {
-        return null;
+        return rank;
     }
 
     /**
@@ -38,18 +43,22 @@ public class Card {
      * @return The shape found on a playing card represented as an enumeration.
      */
     public Suit getSuit() {
-        return null;
+        return suit;
     }
 
     /**
      * Shows the card, making it face-up. This allows the card's name to be seen. Otherwise, it would be unknown.
      */
-    public void show() {}
+    public void show() {
+        isVisible = true;
+    }
 
     /**
      * Hides the card, making it face-down. This has the card appear as 'Unknown Card' or 'UC' instead of its name.
      */
-    public void hide() {}
+    public void hide() {
+        isVisible = false;
+    }
 
 
     /**
@@ -61,7 +70,11 @@ public class Card {
      */
     @Override
     public String toString() {
-        return null;
+        if (isVisible) {
+            return rank.asAbbreviation() + suit.asUnicodeCharacter();
+        } else {
+            return "UC";
+        }
     }
 
     /**
@@ -71,6 +84,10 @@ public class Card {
      * @return The name of the card.
      */
     public String toFullName() {
-        return null;
+        if (isVisible) {
+            return rank + " of " + suit;
+        } else {
+            return "Unknown Card";
+        }
     }
 }
