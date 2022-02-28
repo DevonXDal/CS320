@@ -3,6 +3,7 @@ package modeltests;
 import models.Player;
 import models.piles.SelectablePile;
 import models.piles.WastePile;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,6 +23,7 @@ import static org.junit.Assert.*;
 public class PlayerTest {
     private Player player;
 
+    @Before
     public void setUp() {
         player = new Player();
     }

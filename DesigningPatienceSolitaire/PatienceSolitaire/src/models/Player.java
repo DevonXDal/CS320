@@ -18,7 +18,7 @@ public class Player {
      * @param pile The new pile to select
      */
     public void alterCurrentSelection(SelectablePile pile) {
-
+        selectedSource = pile;
     }
 
     /**
@@ -27,6 +27,6 @@ public class Player {
      * @return null if nothing is selected or the pile
      */
     public SelectablePile getSelectedSource() {
-       return null ;
+       return selectedSource;
     }
 }
