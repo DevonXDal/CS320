@@ -17,8 +17,49 @@ import static org.junit.Assert.*;
 /**
  * Tests the CardColumn class to ensure that it is implemented correctly.
  *
+ * Axioms:
+ * I.	cardColumn = cardColumn.create()
+ * cardColumn.viewCard() == null or None or similar
+ * II.	cardColumn = cardColumn.create()
+ * cardColumn.addCard({the card})
+ * cardColumn.viewCard() == {the card}
+ * cardColumn.viewCard() == {the card} // The card is still there
+ * cardColumn.removeCard() == {the card}
+ * cardColumn.removeCard() == null or None or similar
+ * III.	cardColumn = cardColumn.create()
+ * cardColumn.verifyMoveIsLegal({an king of some sort}) == true
+ * cardColumn.verifyMoveIsLegal({a non-king card}) == false
+ * IV.	cardColumn = cardColumn.create()
+ * cardColumn.addCard({an king of any suit})
+ * cardColumn.verifyMoveIsLegal({a different king} == false
+ * cardColumn.verifyMoveIsLegal({a Queen but a different suit} == true
+ * cardColumn.verifyMoveIsLegal({a Queen of the same suit} == false
+ * Continue building down to Ace, checking other cards that should or should not work
+ * V.	A card column with cards
+ * cardColumn.getCards() == {all of the cards in a collection}
+ * cardColumn.getCards() == {all of the cards in a collection again} // No cards are removed
+ * VI.	A card column with a few cards
+ * cardColumn.removeMultipleCards({amount greater than what is in the column}) == null
+ * VII.	A card column with a few cards
+ * cardColumn.removeMultipleCards({amount equal or less}) == {the cards that were removed with the first being the card that was the furthest to the top of the column}
+ * if all of them were removed
+ * cardColumn.removeCard() == null
+ * viewCard == null
+ * removeMultipleCards({an amount}) == null
+ * VIII.	cardColumn = cardColumn.create()
+ * cardColumn.addMultipleCards({a collection of cards})
+ * cardColumn.viewCard() == {the last card in the collection that was provided}
+ * IX.	A card column with no cards
+ * cardColumn.viewCardAtPos({any position}) == null
+ * X.	A card column with enough cards
+ * cardColumn.viewCardAtPos({any position}) == {the card at that position}
+ * cardColumn.viewCardAtPos({any position}) == {the card at that position} // Card is still there
+ * XI.	Card column with every card face down besides the bottom one
+ * cardColumn.remove()
+ * cardColumn.viewCard().toString() == “{Rank} of {Suit}” not “Unknown Card”
+ *
  * @author Devon X. Dalrymple
- * @version 2022-02-26
+ * @version 2022-02-28
  */
 public class CardColumnTest {
     private CardColumn column;
@@ -30,6 +71,16 @@ public class CardColumnTest {
 
     /**
      * Tests the CardColumn's implementation against the rules put forth by the abstract class' methods.
+     *
+     * Relevant Axioms:
+     * I.	cardColumn = cardColumn.create()
+     * cardColumn.viewCard() == null or None or similar
+     * II.	cardColumn = cardColumn.create()
+     * cardColumn.addCard({the card})
+     * cardColumn.viewCard() == {the card}
+     * cardColumn.viewCard() == {the card} // The card is still there
+     * cardColumn.removeCard() == {the card}
+     * cardColumn.removeCard() == null or None or similar
      */
     @Test
     public void runInterfaceTests() {
@@ -40,6 +91,17 @@ public class CardColumnTest {
 
     /**
      * Tests that the card column appropriately checks the legality of its moves.
+     *
+     * Relevant Axioms:
+     * III.	cardColumn = cardColumn.create()
+     * cardColumn.verifyMoveIsLegal({an king of some sort}) == true
+     * cardColumn.verifyMoveIsLegal({a non-king card}) == false
+     * IV.	cardColumn = cardColumn.create()
+     * cardColumn.addCard({an king of any suit})
+     * cardColumn.verifyMoveIsLegal({a different king} == false
+     * cardColumn.verifyMoveIsLegal({a Queen but a different suit} == true
+     * cardColumn.verifyMoveIsLegal({a Queen of the same suit} == false
+     * Continue building down to Ace, checking other cards that should or should not work
      */
     @Test
     public void verifyMoveIsLegalTest() {
@@ -77,6 +139,11 @@ public class CardColumnTest {
 
     /**
      * Tests that the cards are returned but not removed from the card column.
+     *
+     * Relevant Axioms:
+     * V.	A card column with cards
+     * cardColumn.getCards() == {all of the cards in a collection}
+     * cardColumn.getCards() == {all of the cards in a collection again} // No cards are removed
      */
     @Test
     public void getCardsTest() {
@@ -90,6 +157,16 @@ public class CardColumnTest {
 
     /**
      * Tests that removing multiple cards, maintains the order of the cards returned, and that if no cards are there, it is null
+     *
+     * Relevant Axioms:
+     * VI.	A card column with a few cards
+     * cardColumn.removeMultipleCards({amount greater than what is in the column}) == null
+     * VII.	A card column with a few cards
+     * cardColumn.removeMultipleCards({amount equal or less}) == {the cards that were removed with the first being the card that was the furthest to the top of the column}
+     * if all of them were removed
+     * cardColumn.removeCard() == null
+     * viewCard == null
+     * removeMultipleCards({an amount}) == null
      */
     @Test
     public void removeMultipleCardsTest() {
@@ -112,6 +189,11 @@ public class CardColumnTest {
 
     /**
      * Tests that adding multiple cards works as intended
+     *
+     * Relevant Axioms:
+     * VIII.	cardColumn = cardColumn.create()
+     * cardColumn.addMultipleCards({a collection of cards})
+     * cardColumn.viewCard() == {the last card in the collection that was provided}
      */
     @Test
     public void addMultipleCardsTest() {
@@ -126,6 +208,13 @@ public class CardColumnTest {
 
     /**
      * Tests that a card can be viewed at any position so long as the card is there
+     *
+     * Relevant Axioms:
+     * IX.	A card column with no cards
+     * cardColumn.viewCardAtPos({any position}) == null
+     * X.	A card column with enough cards
+     * cardColumn.viewCardAtPos({any position}) == {the card at that position}
+     * cardColumn.viewCardAtPos({any position}) == {the card at that position} // Card is still there
      */
     @Test
     public void viewCardAtPos() {
@@ -140,6 +229,11 @@ public class CardColumnTest {
 
     /**
      * Tests that the card column flips its bottom card face up when the card is revealed
+     *
+     * Relevant Axioms:
+     * XI.	Card column with every card face down besides the bottom one
+     * cardColumn.remove()
+     * cardColumn.viewCard().toString() == “{Rank} of {Suit}” not “Unknown Card”
      */
     @Test
     public void verifyBottomCardFaceUpTest() {

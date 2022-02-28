@@ -14,8 +14,37 @@ import static org.junit.Assert.*;
 /**
  * Tests the Foundation class to ensure that it is implemented correctly.
  *
+ * Axioms:
+ * I.	foundation = foundation.create()
+ * foundation.viewCard() == null or None or similar
+ * II.	foundation = foundation.create()
+ * foundation.addCard({the card})
+ * foundation.viewCard() == {the card}
+ * foundation.viewCard() == {the card} // The card is still there
+ * foundation.removeCard() == {the card}
+ * foundation.removeCard() == null or None or similar
+ * III.	foundation = foundation.create()
+ * foundation.verifyMoveIsLegal({an ace of some sort}) == true
+ * foundation.verifyMoveIsLegal({a non-ace card}) == false
+ * IV.	foundation = foundation.create()
+ * foundation.addCard({an ace of any suit})
+ * foundation.verifyMoveIsLegal({a different ace} == false
+ * foundation.verifyMoveIsLegal({a two but a different suit} == false
+ * foundation.verifyMoveIsLegal({a two of the same suit} == true
+ * Continue building up to King, checking other cards that should or should not work
+ * V.	a foundation that has been built up to King
+ * foundation.checkFoundationCompleted() == true
+ * VI.	a foundation that may have cards but does not have all the way up to king
+ * foundation.checkFoundationCompleted() == false
+ * VII.	a foundation with a few cards
+ * foundation.viewCard == {the top most card [highest rank]}
+ * VIII.	a foundation with no cards
+ * foundation.toString() == “[  ]”
+ * IX.	a foundation with at least one card
+ * foundation.toString == “[??]” where ?? is the two-three character representation of the top card
+ *
  * @author Devon X. Dalrymple
- * @version 2022-02-26
+ * @version 2022-02-28
  */
 public class FoundationTest {
     private Foundation foundation;
@@ -27,6 +56,18 @@ public class FoundationTest {
 
     /**
      * Tests the Foundation's implementation against the rules put forth by the abstract class' methods.
+     *
+     * Relevant Axioms:
+     * I.	foundation = foundation.create()
+     * foundation.viewCard() == null or None or similar
+     * II.	foundation = foundation.create()
+     * foundation.addCard({the card})
+     * foundation.viewCard() == {the card}
+     * foundation.viewCard() == {the card} // The card is still there
+     * foundation.removeCard() == {the card}
+     * foundation.removeCard() == null or None or similar
+     * VII.	a foundation with a few cards
+     * foundation.viewCard == {the top most card [highest rank]}
      */
     @Test
     public void runInterfaceTests() {
@@ -37,6 +78,12 @@ public class FoundationTest {
 
     /**
      * Tests that the foundation is only completed if the top card is the King.
+     *
+     * Relevant Axioms:
+     * V.	a foundation that has been built up to King
+     * foundation.checkFoundationCompleted() == true
+     * VI.	a foundation that may have cards but does not have all the way up to king
+     * foundation.checkFoundationCompleted() == false
      */
     @Test
     public void checkFoundationCompleted() {
@@ -55,6 +102,17 @@ public class FoundationTest {
 
     /**
      * Tests that the foundation appropriately checks the legality of its moves.
+     *
+     * Relevant Axioms:
+     * III.	foundation = foundation.create()
+     * foundation.verifyMoveIsLegal({an ace of some sort}) == true
+     * foundation.verifyMoveIsLegal({a non-ace card}) == false
+     * IV.	foundation = foundation.create()
+     * foundation.addCard({an ace of any suit})
+     * foundation.verifyMoveIsLegal({a different ace} == false
+     * foundation.verifyMoveIsLegal({a two but a different suit} == false
+     * foundation.verifyMoveIsLegal({a two of the same suit} == true
+     * Continue building up to King, checking other cards that should or should not work
      */
     @Test
     public void verifyMoveIsLegalTest() {
@@ -86,6 +144,12 @@ public class FoundationTest {
 
     /**
      * Tests that the foundation displays itself appropriately
+     *
+     * Relevant Axioms:
+     * VIII.	a foundation with no cards
+     * foundation.toString() == “[  ]”
+     * IX.	a foundation with at least one card
+     * foundation.toString == “[??]” where ?? is the two-three character representation of the top card
      */
     @Test
     public void toStringTest() {
