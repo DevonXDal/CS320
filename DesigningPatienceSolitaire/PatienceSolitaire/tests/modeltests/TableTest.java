@@ -5,6 +5,7 @@ import models.Deck;
 import models.Table;
 
 import models.piles.CardColumn;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,6 +42,7 @@ import static org.junit.Assert.*;
 public class TableTest {
     private Table table;
 
+    @Before
     public void setUp() {
         table = new Table();
     }
@@ -124,7 +126,7 @@ public class TableTest {
 
             if (currentColumnIndex + 1 == columnsFromTable.length) {
                 indexOfCurrentStartingColumn++;
-                currentColumnIndex = indexOfCurrentStartingColumn;
+                currentColumnIndex = indexOfCurrentStartingColumn - 1;
             }
         }
 
