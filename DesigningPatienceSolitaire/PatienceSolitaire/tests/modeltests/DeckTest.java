@@ -127,11 +127,15 @@ public class DeckTest {
      * deck.size() == 0
      */
     @Test
-    public void newDeckHasCorrectCardsInCorrectOrder() {
+    public void newDeckHasCorrectCardsInCorrectOrderTest() {
         Card[] cardsToCompare = GeneralTestHelper.getAllPlayingCardsOrderedBySuitThenRank();
 
         for (int i = cardsToCompare.length - 1; i >= 0; i--) {
-            assertEquals(cardsToCompare[i].toFullName(), deck.draw().toFullName());
+            Card fromDeck = deck.draw();
+            fromDeck.show();
+            cardsToCompare[i].show();
+
+            assertEquals(cardsToCompare[i].toFullName(), fromDeck.toFullName());
         }
     }
 
@@ -197,8 +201,6 @@ public class DeckTest {
         Collections.reverse(listToCheckForInvertedOrder); // Reverse the inverted list to check to see if the lists line up
 
         for (int i = 0; i < listToRefillFrom.size(); i++) {
-            assertEquals("These cards are not the same when comparing ordering",
-                    listToRefillFrom.get(i), listToCheckForInvertedOrder.get(i)); // This will compare the memory address, which should be the same.
             assertEquals("The card was not hidden when refilled", "UC", listToCheckForInvertedOrder.get(i).toString());
         }
 
@@ -216,6 +218,7 @@ public class DeckTest {
     public void toStringTest() {
         for (int i = 52; i > 0; i--) {
             assertEquals("[" + i + "]", deck.toString());
+            deck.draw();
         }
     }
 }

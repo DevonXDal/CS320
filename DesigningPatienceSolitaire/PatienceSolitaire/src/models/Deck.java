@@ -1,7 +1,11 @@
 package models;
 
 import models.Card;
+import models.enumerations.Rank;
+import models.enumerations.Suit;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -14,13 +18,21 @@ import java.util.Stack;
  * @version 2022-02-24
  */
 public class Deck {
-    private Stack<Card> cards;
+    private List<Card> cards;
 
     /**
      * Creates the stack of cards and fills it with 52 cards built from the 13 rank and 4 suit possibilities.
      * The stack of cards will then be shuffled.
      */
-    public Deck() { }
+    public Deck() {
+        cards = new ArrayList<>();
+
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                cards.add(new Card(rank, suit));
+            }
+        }
+    }
 
     /**
      * Returns the number of cards that are currently in the deck.
@@ -28,7 +40,7 @@ public class Deck {
      * @return The number of cards in this deck
      */
     public int size() {
-        return -1;
+        return cards.size();
     }
 
     /**
@@ -37,7 +49,7 @@ public class Deck {
      * @return The card at the top of the deck.
      */
     public Card draw() {
-        return null;
+        return cards.remove(size() - 1);
     }
 
     /**
@@ -47,12 +59,21 @@ public class Deck {
      *
      * @param newCards The cards to insert to the top of the deck one at a time in order.
      */
-    public void insertCardsInInvertedOrder(List newCards) { }
+    public void insertCardsInInvertedOrder(List<Card> newCards) {
+        for (int i = newCards.size() - 1; i >= 0; i--) {
+            Card cardToInsert = newCards.get(i);
+
+            cardToInsert.hide();
+            cards.add(cardToInsert);
+        }
+    }
 
     /**
      * Randomize the positions of the cards in the deck
      */
-    public void shuffle() { }
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
 
     /**
      * Returns the deck in the representational form for this Patience Solitaire as [#]. Where # is the number of cards
@@ -62,6 +83,6 @@ public class Deck {
      */
     @Override
     public String toString() {
-        return null;
+        return "[" + cards.size() + "]";
     }
 }

@@ -88,6 +88,7 @@ public class GeneralTestHelper {
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 cards[index] = new Card(rank, suit);
+                index++;
             }
         }
 
