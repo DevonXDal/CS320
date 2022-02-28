@@ -3,16 +3,19 @@ package mocks;
 import controller.IController;
 import other.Command;
 
+import java.util.LinkedList;
+
 /**
  * Pretends to be the controller for tests dealing with an implementation of the command line.
  *
  * Why: This mock class exists as a way to test implementations of the command line by ensuring the input received during tests is what is desired
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-28
  */
 public class MockController implements IController {
-    private Command mostRecentlySentInput;
+    // Use the poll() method to receive lines of input as it came in
+    public static LinkedList<Command> receivedCommands = new LinkedList<>(); // Receives input like a queue as requested
 
     /**
      * This collects the input from the command line and notfies the testing class when input has been recieved.
@@ -23,16 +26,8 @@ public class MockController implements IController {
      */
     @Override
     public String sendInput(Command command) {
-        mostRecentlySentInput = command;
+        receivedCommands.add(command);
         return null;
     }
 
-    /**
-     * Returns the recently inserted input
-     *
-     * @return The input command object that was sent most recently from a command line implementation
-     */
-    public Command getMostRecentlySentInput() {
-        return mostRecentlySentInput;
-    }
 }

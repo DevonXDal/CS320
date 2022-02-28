@@ -10,12 +10,26 @@ import static org.junit.Assert.*;
 /**
  * Tests the Command class so that it can be ensured that commands can be sent correctly
  *
+ * Axioms:
+ * I.	command = command.create({commandWord}, ({firstArgument}, {secondArgument}, …))
+ * command.getCommand() == {commandWord}
+ * arguments = command.getArguments()
+ * for each argument in arguments:
+ * argument == {the current argument for each argument that was stored}
+ *
  * @author Devon X. Dalrymple
  * @version 2022-02-27
  */
 public class CommandTest {
     /**
      * Tests that the arguments provided to the constructor can be returned as expected
+     *
+     * Relevant Axioms:
+     * I.	command = command.create({commandWord}, ({firstArgument}, {secondArgument}, …))
+     * command.getCommand() == {commandWord}
+     * arguments = command.getArguments()
+     * for each argument in arguments:
+     * argument == {the current argument for each argument that was stored}
      */
     @Test
     public void constructorTest() {
