@@ -21,7 +21,8 @@ public class Command {
      * @param args The arguments, if useful, that will be used to carry out the command
      */
     public Command(String command, String[] args) {
-
+        this.command = command;
+        arguments = args;
     }
 
     /**

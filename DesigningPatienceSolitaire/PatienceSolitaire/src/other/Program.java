@@ -1,5 +1,7 @@
 package other;
 
+import controller.GameController;
+
 /**
  * This Program class runs the game of Patience Solitaire. Once it creates the GameController it runs the initializeGame method and then waits
  * for the program to finish.
@@ -14,6 +16,8 @@ public final class Program {
      * @param args Command line arguments, none are actually used
      */
     public static void main(String[] args) {
+        GameController controller = new GameController();
 
+        controller.initializeGame();
     }
 }
