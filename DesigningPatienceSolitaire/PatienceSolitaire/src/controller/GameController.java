@@ -48,6 +48,16 @@ public class GameController implements IController {
     }
 
     /**
+     * Starts the initialization process to get the game loop up and running. The game loop will run after the initial set
+     * up has been completed. When set to true, this will not set up the table or player.
+     *
+     * @param flag When set to true, this will not set up the table or player and will assume that it has already been done
+     */
+    public void initializeGame(boolean flag) {
+
+    }
+
+    /**
      * Accepts commands that could not be identified at the command line level to handle. If the command can be carried out
      * as per game rules, it will be.
      *
