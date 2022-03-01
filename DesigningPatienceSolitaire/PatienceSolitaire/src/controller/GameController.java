@@ -1,16 +1,25 @@
 package controller;
 
+import models.Card;
+import models.Deck;
 import models.Player;
 import models.Table;
+import models.piles.CardColumn;
+import models.piles.SelectablePile;
+import models.piles.WastePile;
 import other.Command;
+import view.CommandLine;
 import view.ICommandLine;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This controller.GameController represents the controller in an MVC pattern. It handles the internal game loop and logic.
  * It controls the actions taken by the other classes and makes what the other classes do actually useful.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-24
+ * @version 2022-02-29
  */
 public class GameController implements IController {
     private Table table;
@@ -22,7 +31,9 @@ public class GameController implements IController {
      * Creates a new controller.GameController object with the command line, player, and table being set up by the contoller itself.
      */
     public GameController() {
-
+        userInterface = new CommandLine();
+        table = new Table();
+        player = new Player();
     }
 
     /**
@@ -36,7 +47,9 @@ public class GameController implements IController {
      * @param player The player/hand object
      */
     public GameController(ICommandLine commandLine, Table table, Player player) {
-
+        userInterface = commandLine;
+        table = new Table();
+        player = new Player();
     }
 
     /**
@@ -44,7 +57,30 @@ public class GameController implements IController {
      * up has been completed.
      */
     public void initializeGame() {
+        CardColumn[] columns = new CardColumn[7];
+        Deck deck = table.getDeck();
 
+        for (int i = 1; i <= 7; i++) { // For each foundation, if the foundation is null, an exception will fail the test
+            columns[i] = (CardColumn) table.getSelectablePile("column " + i);
+        }
+
+        for (int currentColumnIndex = 0, indexOfCurrentStartingColumn = 0; indexOfCurrentStartingColumn != columns.length; currentColumnIndex++) {
+            columns[currentColumnIndex].addCard(deck.draw());
+
+            if (currentColumnIndex + 1 == columns.length) {
+                indexOfCurrentStartingColumn++;
+                currentColumnIndex = indexOfCurrentStartingColumn - 1;
+            }
+        }
+
+        for (CardColumn column : columns) {
+            column.viewCard().show();
+        }
+
+        isGameLoopContinuing = true;
+
+        fetchGameStatusUpdate();
+        runGameLoop();
     }
 
     /**
@@ -54,7 +90,14 @@ public class GameController implements IController {
      * @param flag When set to true, this will not set up the table or player and will assume that it has already been done
      */
     public void initializeGame(boolean flag) {
+        if (flag) {
+            isGameLoopContinuing = true;
 
+            fetchGameStatusUpdate();
+            runGameLoop();
+        } else {
+            initializeGame();
+        }
     }
 
     /**
@@ -69,47 +112,189 @@ public class GameController implements IController {
      */
     @Override
     public String sendInput(Command command) {
-        return null;
+        switch (command.getCommand()) {
+            case "select":
+                return selectPile(command.getArguments());
+            case "move":
+                return moveSelectionToDestination(command.getArguments());
+            case "draw":
+                return doDrawOrRefill();
+            case "deselect":
+                return deselectSourceSelection();
+            case "restart":
+                return resetGame();
+            case "exit":
+                endGameAndStopLoop();
+                return null;
+            default:
+                return "Unrecognized command";
+        }
     }
 
     // This runs the game loop and queries for the command line for input as needed.
     private void runGameLoop() {
-
+        while (isGameLoopContinuing) {
+            userInterface.collectAndHandleInput();
+        }
     }
 
     // This gets the current card selected and the view of the table to send back to the command line.
     private String fetchGameStatusUpdate() {
-        return null;
+        StringBuilder builder = new StringBuilder();
+        SelectablePile source = player.getSelectedSource();
+
+        builder.append(table);
+        builder.append("\n");
+        builder.append("Currently Selected Card(s): ");
+
+        if (source == null) {
+            builder.append("N/A\n");
+        } else {
+            builder.append(source.viewCard() + "\n");
+        }
+
+        return builder.toString();
     }
 
     // This sends a request formatted as needed to get the desired pile back from the table and attempt to select it.
     private String selectPile(String[] args) {
-        return null;
+        if (args.length == 5) {
+            try {
+                int amount = Integer.parseInt(args[0]);
+
+                SelectablePile sourcePile = table.getSelectablePile(args[3] + args[4]);
+
+                if (sourcePile == null) {
+                    throw new RuntimeException();
+                }
+
+                CardColumn sourceColumn = (CardColumn) sourcePile;
+
+                if (sourceColumn.viewCardAtPos(amount) == null) {
+                    return "Could not select the top card at that position from the bottom, either that position does not exist or the card is face down";
+                } else {
+                    player.alterCurrentSelection(sourcePile);
+                }
+
+                Command moveCommand;
+                while (true) {
+                    moveCommand = userInterface.requestMultiCardMoveDestination();
+
+                    switch (moveCommand.getCommand()) {
+                        case "column":
+                            int destinationColumnPos = Integer.parseInt(moveCommand.getArguments()[0]);
+
+                            CardColumn destinationColumn = (CardColumn) table.getSelectablePile("column " + destinationColumnPos);
+
+                            Card toVerify = sourceColumn.viewCardAtPos(amount);
+
+                            if (destinationColumn.verifyMoveIsLegal(toVerify)) {
+                                List<Card> movingCards = sourceColumn.removeMultipleCards(amount);
+                                Collections.reverse(movingCards); // Turn the order of the collection, so it is inserted correctly to the destination
+                                destinationColumn.addMultipleCards(movingCards);
+                                player.alterCurrentSelection(null);
+                                return fetchGameStatusUpdate();
+                            } else {
+                                player.alterCurrentSelection(null);
+                                return "The top card of the group of cards does not meet the game rule requirements to be moved to that card column.";
+                            }
+                        case "deselect":
+                            player.alterCurrentSelection(null);
+                            return null;
+                        default:
+                            return "Unrecognized command";
+                    }
+                }
+            } catch (Exception ignored) {
+                return "One or more bad arguments were provided";
+            }
+
+        } else if (args.length >= 1 && args.length <= 2) { // General selection
+            String pileKey = args[0];
+
+            if (args[1] != null) {
+                pileKey += args[1];
+            }
+
+            SelectablePile pile = table.getSelectablePile(pileKey);
+
+            if (pile != null && pile.viewCard() != null) {
+                player.alterCurrentSelection(pile);
+                return fetchGameStatusUpdate();
+            } else {
+                return "Selection must have at least one card";
+            }
+        } else { // Invalid
+            return "The select command requires one, two, or five arguments";
+        }
     }
 
     // This attempts to draw a card from the deck and place it face up into the waste pile. If the deck is empty, it
     // attempts to refill the deck with waste pile cards.
     private String doDrawOrRefill() {
-        return null;
+        Deck deck = table.getDeck();
+        WastePile waste = (WastePile) table.getSelectablePile("waste");
+
+        if (deck.size() == 0 && waste.viewCard() != null) { // Refill the deck
+            deck.insertCardsInInvertedOrder(waste.removeAll());
+            return fetchGameStatusUpdate();
+        } else if (deck.size() > 0) {
+            waste.addCard(deck.draw());
+            return fetchGameStatusUpdate();
+        } else {
+            return "No cards are left in either the waste pile or draw pile to draw from.";
+        }
     }
 
     // This tries to move the selected card from the selected source to a destination deciphered from the arguments.
     private String moveSelectionToDestination(String[] args) {
-        return  null;
+        if (player.getSelectedSource() == null) {
+            return "Cannot move a card without selecting its source first";
+        } else if (args.length >= 1 && args.length <= 2) {
+            String pileKey = args[0];
+
+            if (args[1] != null) {
+                pileKey += args[1];
+            }
+
+            SelectablePile destination = table.getSelectablePile(pileKey);
+
+            if (destination == null) {
+                return "Invalid pile chosen as destination";
+            }
+
+            if (destination.verifyMoveIsLegal(player.getSelectedSource().viewCard())) {
+                destination.addCard(player.getSelectedSource().removeCard());
+                player.alterCurrentSelection(null);
+                return fetchGameStatusUpdate();
+            } else {
+                player.alterCurrentSelection(null);
+                userInterface.printGameUpdate("Cannot make an illegal move");
+                return fetchGameStatusUpdate();
+            }
+        } else {
+            return "Bad or missing arguments";
+        }
     }
 
     // This deselects the currently selected card and requests for a game status update.
     private String deselectSourceSelection() {
-        return null;
+        player.alterCurrentSelection(null);
+        return fetchGameStatusUpdate();
     }
 
     // This resets the game so that a new board of cards is played out and the game starts anew.
     private String resetGame() {
+        table = new Table();
+        player = new Player();
+
+        initializeGame();
+
         return null;
     }
 
     // This ends the game and stops the game loop so that the program can be safely closed.
     private void endGameAndStopLoop() {
-
+        isGameLoopContinuing = false;
     }
 }

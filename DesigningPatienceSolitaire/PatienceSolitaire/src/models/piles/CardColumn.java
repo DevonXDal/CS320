@@ -13,7 +13,7 @@ import java.util.List;
  * in the same move. It also has unique destination rules, bottom card face up rules, etc.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-21
+ * @version 2022-02-28
  */
 public class CardColumn extends SelectablePile {
 

@@ -8,7 +8,7 @@ package other;
  * elements of the program meant to be handled by the controller.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-21
+ * @version 2022-02-28
  */
 public class Command {
     private String command;

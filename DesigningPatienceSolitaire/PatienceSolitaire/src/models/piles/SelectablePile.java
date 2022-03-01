@@ -13,7 +13,7 @@ import java.util.List;
  * is to simplify the public interface for various classes and to allow similar objects for the game to be stored in others as one variable.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-21
+ * @version 2022-02-28
  */
 public abstract class SelectablePile {
     protected List<Card> cards;

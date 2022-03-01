@@ -7,7 +7,7 @@ import models.piles.SelectablePile;
  * through the command line to move using, the player class is used to keep track of it.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-28
  */
 public class Player {
     private SelectablePile selectedSource;

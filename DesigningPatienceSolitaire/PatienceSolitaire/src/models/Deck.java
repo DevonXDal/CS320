@@ -15,7 +15,7 @@ import java.util.Stack;
  * creation of the set of cards that it uses.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-24
+ * @version 2022-02-28
  */
 public class Deck {
     private List<Card> cards;

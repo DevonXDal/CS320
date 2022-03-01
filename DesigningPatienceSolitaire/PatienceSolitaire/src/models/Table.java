@@ -18,7 +18,7 @@ import java.util.Map;
  * own display generation.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-24
+ * @version 2022-02-28
  */
 public class Table {
     private Deck deck;
@@ -60,7 +60,7 @@ public class Table {
      * @return The pile if it was found or null
      */
     public SelectablePile getSelectablePile(String pileInfo) {
-        return selectablePiles.get(pileInfo);
+        return selectablePiles.getOrDefault(pileInfo, null);
     }
 
     /**

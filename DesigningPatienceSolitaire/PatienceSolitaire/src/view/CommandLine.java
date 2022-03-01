@@ -12,7 +12,7 @@ import java.io.OutputStream;
  * controller it is assigned.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-22
+ * @version 2022-02-29
  */
 public class CommandLine implements ICommandLine {
     private InputStream inputStream;

@@ -126,8 +126,10 @@ public class GameControllerTest {
         Card columnTwoCard = new Card (Rank.Eight, Suit.Hearts);
 
         for (Card card : columnOneCards) {
-            card.show();
-            twoColumns[0].addCard(card);
+            if (card != null) {
+                card.show();
+                twoColumns[0].addCard(card);
+            }
         }
 
         columnTwoCard.show();

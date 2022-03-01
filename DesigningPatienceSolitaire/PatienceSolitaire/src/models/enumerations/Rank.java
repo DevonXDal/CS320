@@ -7,7 +7,7 @@ package models.enumerations;
  * others.
  *
  * @author Devon X. Dalrymple
- * @version 2022-01-17
+ * @version 2022-02-28
  */
 public enum Rank {
     Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King;

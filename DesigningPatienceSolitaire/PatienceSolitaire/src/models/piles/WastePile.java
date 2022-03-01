@@ -13,7 +13,7 @@ import java.util.List;
  * once.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-24
+ * @version 2022-02-28
  */
 public class WastePile extends SelectablePile{
 
