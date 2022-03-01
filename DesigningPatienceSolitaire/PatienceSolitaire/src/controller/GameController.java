@@ -48,8 +48,8 @@ public class GameController implements IController {
      */
     public GameController(ICommandLine commandLine, Table table, Player player) {
         userInterface = commandLine;
-        table = new Table();
-        player = new Player();
+        this.table = table;
+        this.player = player;
     }
 
     /**
@@ -162,7 +162,7 @@ public class GameController implements IController {
             try {
                 int amount = Integer.parseInt(args[0]);
 
-                SelectablePile sourcePile = table.getSelectablePile(args[3] + args[4]);
+                SelectablePile sourcePile = table.getSelectablePile(args[3] +" "+ args[4]);
 
                 if (sourcePile == null) {
                     throw new RuntimeException();
@@ -178,6 +178,7 @@ public class GameController implements IController {
 
                 Command moveCommand;
                 while (true) {
+                    userInterface.printGameUpdate("What card column do you wish to move the group of cards to? Use 'column #' with # being the column's identifying position or 'deselect'");
                     moveCommand = userInterface.requestMultiCardMoveDestination();
 
                     switch (moveCommand.getCommand()) {

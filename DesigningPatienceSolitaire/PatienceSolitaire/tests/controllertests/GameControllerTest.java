@@ -84,6 +84,8 @@ public class GameControllerTest {
         commandLine = new MockCommandLine();
 
         controller = new GameController(commandLine, table, player);
+
+        commandLine.setController(controller);
     }
 
     /**

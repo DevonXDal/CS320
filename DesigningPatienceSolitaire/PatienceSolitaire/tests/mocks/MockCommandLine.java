@@ -46,7 +46,11 @@ public class MockCommandLine implements ICommandLine {
      */
     @Override
     public void collectAndHandleInput() {
-        systemOutput.add(controller.sendInput(mockUserInput.poll()));
+        String returnedString = controller.sendInput(mockUserInput.poll());
+
+        if (returnedString != null) {
+            systemOutput.add(returnedString);
+        }
     }
 
     /**
