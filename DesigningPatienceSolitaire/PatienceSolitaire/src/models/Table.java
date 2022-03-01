@@ -125,7 +125,7 @@ public class Table {
                 if (column.getCards().size() < rowNumber) {
                     builder.append("[  ]   ");
                 } else {
-                    Card possibleCard = column.viewCardAtPos(column.getCards().size() - rowNumber); // Flips the methods card usage to get from the top
+                    Card possibleCard = column.viewCardAtPos(column.getCards().size() - rowNumber + 1); // Flips the methods card usage to get from the top
                     String representationOfColumnRow = null;
 
                     if (possibleCard != null) {

@@ -7,6 +7,9 @@ import models.Table;
 import models.piles.CardColumn;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /**
@@ -117,6 +120,14 @@ public class TableTest {
         builder.append("[  ]   [  ]   [  ]   [  ]   [  ]   [  ]   [2♡]   \n");
 
         Deck deck = table.getDeck();
+        ArrayList<Card> tempToReverseCards = new ArrayList<>();
+
+        while (deck.size() > 0) {
+            tempToReverseCards.add(0, deck.draw());
+        }
+
+        deck.insertCardsInInvertedOrder(tempToReverseCards);
+
         CardColumn[] columnsFromTable = new CardColumn[7];
 
         for (int i = 1; i <= 7; i++) { // For each foundation, if the foundation is null, an exception will fail the test
