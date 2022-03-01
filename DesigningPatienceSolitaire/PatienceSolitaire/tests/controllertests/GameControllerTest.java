@@ -143,6 +143,7 @@ public class GameControllerTest {
 
         controller.initializeGame(true);
 
+        MockCommandLine.systemOutput.poll(); // Get rid of the starting table
         assertEquals("What card column do you wish to move the group of cards to? Use 'column #' with # being the column's identifying position or 'deselect'",
                 MockCommandLine.systemOutput.poll());
         assertTrue(MockCommandLine.systemOutput.poll().contains("[  ]")); // Output of the table occurs on a successful move
@@ -187,6 +188,7 @@ public class GameControllerTest {
 
         controller.initializeGame(true);
 
+        MockCommandLine.systemOutput.poll(); // Get rid of the starting table
         assertEquals("What card column do you wish to move the group of cards to? Use 'column #' with # being the column's identifying position or 'deselect'",
                 MockCommandLine.systemOutput.poll());
         assertTrue(MockCommandLine.systemOutput.poll().contains("Currently Selected Card(s): N/A")); // Output of the table occurs on a successful move
@@ -231,7 +233,7 @@ public class GameControllerTest {
 
         controller.initializeGame(true);
 
-        for (int i = 0; i < 18; i++) { // Clear out the unnecessary system input
+        for (int i = 0; i < 23; i++) { // Clear out the unnecessary system input
             MockCommandLine.systemOutput.poll();
         }
 
@@ -336,6 +338,7 @@ public class GameControllerTest {
         SelectablePile[] piles = getAllPiles();
 
         piles[0].addCard(new Card(Rank.Seven, Suit.Hearts));
+        piles[0].addCard(new Card(Rank.Eight, Suit.Clubs));
 
         MockCommandLine.mockUserInput.add(new Command("draw", new String[0])); // Draw the card
         MockCommandLine.mockUserInput.add(new Command("exit", new String[0])); // Finish the program
@@ -343,7 +346,7 @@ public class GameControllerTest {
         controller.initializeGame(true);
 
         assertEquals(1, table.getDeck().size());
-        assertNull(piles[0].viewCard());
+        assertNotNull(piles[0].viewCard());
     }
 
     /**
@@ -365,6 +368,9 @@ public class GameControllerTest {
         MockCommandLine.mockUserInput.add(new Command("exit", new String[0])); // Finish the program
 
         controller.initializeGame(true);
+
+        MockCommandLine.systemOutput.poll(); // Get rid of the starting table
+        MockCommandLine.systemOutput.poll(); // And the restart information
 
         assertFalse(MockCommandLine.systemOutput.poll().contains("N/A")); // From Current Selection: N/A
         assertNull(player.getSelectedSource());

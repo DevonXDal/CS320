@@ -29,6 +29,7 @@ public class GameController implements IController {
     private ICommandLine userInterface;
     private Player player;
     private boolean isGameLoopContinuing; // If this becomes false, the game loop will end when it next starts the loop.
+    private boolean inializeTestingFlag;
 
     /**
      * Creates a new controller.GameController object with the command line, player, and table being set up by the contoller itself.
@@ -60,6 +61,7 @@ public class GameController implements IController {
      * up has been completed.
      */
     public void initializeGame() {
+        inializeTestingFlag = false;
         CardColumn[] columns = new CardColumn[7];
         Deck deck = table.getDeck();
         deck.shuffle();
@@ -97,6 +99,7 @@ public class GameController implements IController {
      */
     public void initializeGame(boolean flag) {
         if (flag) {
+            inializeTestingFlag = true;
             isGameLoopContinuing = true;
 
             userInterface.printGameUpdate(fetchGameStatusUpdate());
@@ -169,12 +172,14 @@ public class GameController implements IController {
             }
         }
 
-        try {
-            Thread.sleep(5000); // Gives the user time to read the goodbye message.
-        } catch (InterruptedException ignored) {
+        if (!inializeTestingFlag) {
+            try {
+                Thread.sleep(5000); // Gives the user time to read the goodbye message.
+            } catch (InterruptedException ignored) {
 
+            }
+            System.exit(0);
         }
-        System.exit(0);
     }
 
     // This gets the current card selected and the view of the table to send back to the command line.
@@ -279,6 +284,7 @@ public class GameController implements IController {
 
         if (deck.size() == 0 && waste.viewCard() != null) { // Refill the deck
             deck.insertCardsInInvertedOrder(waste.removeAll());
+            waste.addCard(deck.draw());
             return fetchGameStatusUpdate();
         } else if (deck.size() > 0) {
             waste.addCard(deck.draw());
@@ -329,7 +335,7 @@ public class GameController implements IController {
         table = new Table();
         player = new Player();
 
-        initializeGame();
+        initializeGame(inializeTestingFlag);
 
         return null;
     }

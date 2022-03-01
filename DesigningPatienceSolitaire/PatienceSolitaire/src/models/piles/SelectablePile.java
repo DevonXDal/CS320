@@ -40,7 +40,9 @@ public abstract class SelectablePile {
                 return;
             }
         }
+
         cards.add(cardToAdd);
+
     }
 
     /**
