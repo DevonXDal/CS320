@@ -261,6 +261,8 @@ public class GameController implements IController {
             if (pile != null && pile.viewCard() != null) {
                 player.alterCurrentSelection(pile);
                 return fetchGameStatusUpdate();
+            } else if (pile == null) {
+                return "Could not find the pile";
             } else {
                 return "Selection must have at least one card";
             }
