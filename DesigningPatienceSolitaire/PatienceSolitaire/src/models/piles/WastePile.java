@@ -2,6 +2,7 @@ package models.piles;
 
 import models.Card;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class WastePile extends SelectablePile{
     @Override
     public void addCard(Card cardToAdd) {
         cardToAdd.show();
+
         super.addCard(cardToAdd);
     }
 
@@ -35,7 +37,12 @@ public class WastePile extends SelectablePile{
      * @return The cards from the waste pile from bottom to top
      */
     public List<Card> removeAll() {
-        return null;
+        List<Card> cardsRemoved = new ArrayList<>();
+
+        cardsRemoved.addAll(cards);
+        cards.clear();
+
+        return cardsRemoved;
     }
 
     /**
@@ -44,6 +51,10 @@ public class WastePile extends SelectablePile{
      * then it appears as "[  ]"
      */
     public String toString() {
-        return null;
+        if (viewCard() == null) {
+            return "[  ]";
+        } else {
+            return "[" + viewCard() + "]";
+        }
     }
 }

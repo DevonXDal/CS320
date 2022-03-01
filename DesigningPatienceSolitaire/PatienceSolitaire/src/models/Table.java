@@ -122,19 +122,23 @@ public class Table {
 
         for (int rowNumber = 1; rowNumber <= sizeOfLargestColumn; rowNumber++) { // For each row that needs added
             for (CardColumn column : columns) { // For every column
-                Card possibleCard = column.viewCardAtPos(column.getCards().size() - rowNumber); // Flips the methods card usage to get from the top
-                String representationOfColumnRow = null;
-
-                if (possibleCard != null) {
-                    representationOfColumnRow = "[" + possibleCard + "]";
+                if (column.getCards().size() < rowNumber) {
+                    builder.append("[  ]   ");
                 } else {
-                    representationOfColumnRow = "[  ]";
-                }
+                    Card possibleCard = column.viewCardAtPos(column.getCards().size() - rowNumber); // Flips the methods card usage to get from the top
+                    String representationOfColumnRow = null;
 
-                builder.append(representationOfColumnRow);
+                    if (possibleCard != null) {
+                        representationOfColumnRow = "[" + possibleCard + "]";
+                    } else {
+                        representationOfColumnRow = "[UC]";
+                    }
 
-                for (int i = 1; i <= SPACING_SEPARATION - representationOfColumnRow.length(); i++) {
-                    builder.append(" ");
+                    builder.append(representationOfColumnRow);
+
+                    for (int i = 1; i <= SPACING_SEPARATION - representationOfColumnRow.length(); i++) {
+                        builder.append(" ");
+                    }
                 }
             }
 

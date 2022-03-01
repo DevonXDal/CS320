@@ -1,7 +1,9 @@
 package models.piles;
 
 import models.Card;
+import models.enumerations.Rank;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +25,11 @@ public class CardColumn extends SelectablePile {
      */
     @Override
     public Card removeCard() {
-        return super.removeCard();
+        Card toReturn = super.removeCard();
+
+        verifyBottomIsFaceUp();
+
+        return toReturn;
     }
 
     /**
@@ -38,7 +44,15 @@ public class CardColumn extends SelectablePile {
      */
     @Override
     public boolean verifyMoveIsLegal(Card cardToTry) {
-        return super.verifyMoveIsLegal(cardToTry);
+        if (cards.isEmpty()) {
+            return cardToTry.getRank() == Rank.King;
+        } else {
+            Card currentBottomCard = viewCard();
+
+            int cardColorStatus = currentBottomCard.getSuit().ordinal() % 2; // If this is 0 then cardToTry must be 1, otherwise cardToTry must be 0
+
+            return (currentBottomCard.getRank().ordinal() - 1 == cardToTry.getRank().ordinal() && cardToTry.getSuit().ordinal() % 2 != cardColorStatus);
+        }
     }
 
     /**
@@ -50,11 +64,13 @@ public class CardColumn extends SelectablePile {
      * @param cards The collection of cards to insert in order into the column
      */
     public void addMultipleCards(List<Card> cards) {
-
+        for (Card card : cards) {
+            this.cards.add(card);
+        }
     }
 
     /**
-     * Removes and returns the bottom most cards and returns them in the order of top to bottom.
+     * Removes and returns the bottom most cards and returns them in the order of bottom to top.
      *
      * Why: This is done to perform the move action of taking multiple cards from one card column and placing them into
      * another. This is why it structures the order in the way it appears (top most card is the first in the collection).
@@ -62,7 +78,19 @@ public class CardColumn extends SelectablePile {
      * @return The cards that were removed in an order from top to bottom or null if those cards are not there
      */
     public List<Card> removeMultipleCards(int amount) {
-        return null;
+        if (amount > cards.size()) {
+            return null;
+        } else {
+            List<Card> cardsToReturn = new ArrayList<>();
+
+            for (int i = 1; i <= amount; i++) {
+                cardsToReturn.add(cards.remove(cards.size() - 1));
+            }
+
+            verifyBottomIsFaceUp();
+
+            return cardsToReturn;
+        }
     }
 
     /**
@@ -76,7 +104,17 @@ public class CardColumn extends SelectablePile {
      * @return The card at that position or null if no card is there or the card is face down
      */
     public Card viewCardAtPos(int positionFromBottom) {
-        return null;
+        if (positionFromBottom > cards.size() || positionFromBottom <= 0) {
+            return null;
+        } else {
+            int indexToView = (cards.size() - positionFromBottom);
+
+            if (indexToView >= cards.size() || indexToView < 0) {
+                System.out.println("Cards size: " + cards.size() + " and position is " + positionFromBottom);
+            }
+
+            return (cards.get(indexToView).toString().equals("UC")) ? null : cards.get(indexToView);
+        }
     }
 
     /**
@@ -87,11 +125,13 @@ public class CardColumn extends SelectablePile {
      * @return The cards currently in the column
      */
     public List<Card> getCards() {
-        return null;
+        return cards;
     }
 
     // Attempts to turn the bottom card face up whenever a card is removed after the card has been removed.
     private void verifyBottomIsFaceUp() {
-
+        if (viewCard() != null) {
+            viewCard().show();
+        }
     }
 }

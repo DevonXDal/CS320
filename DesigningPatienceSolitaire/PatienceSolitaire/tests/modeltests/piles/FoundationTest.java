@@ -133,7 +133,7 @@ public class FoundationTest {
             foundation.addCard(new Card(rank, suit));
 
             for (Card card : everyCard) {
-                if (card.getRank() == Rank.values()[rank.ordinal() + 1] && card.getSuit() == suit) { // If rank is one more and suit is the same
+                if (rank != Rank.King && card.getRank() == Rank.values()[rank.ordinal() + 1] && card.getSuit() == suit) { // If rank is one more and suit is the same
                     assertTrue(foundation.verifyMoveIsLegal(card));
                 } else {
                     assertFalse(foundation.verifyMoveIsLegal(card));
@@ -155,10 +155,10 @@ public class FoundationTest {
     public void toStringTest() {
         Card randomCard = GeneralTestHelper.generateRandomCard();
 
-        assertEquals("The empty foundation did not generate its string correctly", "[  ]", randomCard.toString());
+        assertEquals("The empty foundation did not generate its string correctly", "[  ]", foundation.toString());
 
         foundation.addCard(randomCard);
 
-        assertEquals("The foundation did not generate its string correctly", "[" + randomCard + "]", randomCard.toString());
+        assertEquals("The foundation did not generate its string correctly", "[" + randomCard + "]", foundation.toString());
     }
 }

@@ -70,6 +70,7 @@ public class GeneralTestHelper {
 
             if (isNewCard) { // Add the card if it is a new/unique card
                 uniqueCards[currentIndex] = newCard;
+                currentIndex++;
             }
         }
 

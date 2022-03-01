@@ -19,7 +19,8 @@ import static org.junit.Assert.*;
  * table.getSelectablePile(“foundation”, {foundation position number from 1 to 4}).viewCard() == null
  * table. getSelectablePile(“column” {card column position number from 1 to 7}).viewCard() == null
  * II.	table = table.create()
- * table.toString() == "[52]   [  ]      [  ]   [  ]   [  ]   [  ]"
+ * table.toString() == "[52]   [  ]      [  ]   [  ]   [  ]   [  ]   "
+ * This should end in a new line
  * III.	table = table.create()
  * deal the cards without shuffling as though the game was being set up
  * table.toString() ==
@@ -76,11 +77,12 @@ public class TableTest {
      *
      * Relevant Axioms:
      * II.	table = table.create()
-     * table.toString() == "[52]   [  ]      [  ]   [  ]   [  ]   [  ]"
+     * table.toString() == "[52]   [  ]      [  ]   [  ]   [  ]   [  ]   "
+     * This should end in a new line
      */
     @Test
     public void initialToStringTest() {
-        assertEquals("[52]   []      []   []   []   []", table.toString());
+        assertEquals("[52]   [  ]      [  ]   [  ]   [  ]   [  ]   \n", table.toString());
     }
 
     /**
@@ -105,14 +107,14 @@ public class TableTest {
     public void toStringTest() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("[24]   [  ]      [  ]   [  ]   [  ]   [  ]\n");
-        builder.append("[A♢]   [UC]   [UC]   [UC]   [UC]   [UC]   [UC]\n");
-        builder.append("[  ]   [8♢]   [UC]   [UC]   [UC]   [UC]   [UC]\n");
-        builder.append("[  ]   [  ]   [A♧]   [UC]   [UC]   [UC]   [UC]\n");
-        builder.append("[  ]   [  ]   [  ]   [6♧]   [UC]   [UC]   [UC]\n");
-        builder.append("[  ]   [  ]   [  ]   [  ]   [10♧]  [UC]   [UC]\n");
-        builder.append("[  ]   [  ]   [  ]   [  ]   [  ]   [K♧]   [UC]\n");
-        builder.append("[  ]   [  ]   [  ]   [  ]   [  ]   [  ]   [2♡]\n");
+        builder.append("[24]   [  ]      [  ]   [  ]   [  ]   [  ]   \n");
+        builder.append("[A♢]   [UC]   [UC]   [UC]   [UC]   [UC]   [UC]   \n");
+        builder.append("[  ]   [8♢]   [UC]   [UC]   [UC]   [UC]   [UC]   \n");
+        builder.append("[  ]   [  ]   [A♧]   [UC]   [UC]   [UC]   [UC]   \n");
+        builder.append("[  ]   [  ]   [  ]   [6♧]   [UC]   [UC]   [UC]   \n");
+        builder.append("[  ]   [  ]   [  ]   [  ]   [10♧]  [UC]   [UC]   \n");
+        builder.append("[  ]   [  ]   [  ]   [  ]   [  ]   [K♧]   [UC]   \n");
+        builder.append("[  ]   [  ]   [  ]   [  ]   [  ]   [  ]   [2♡]   \n");
 
         Deck deck = table.getDeck();
         CardColumn[] columnsFromTable = new CardColumn[7];
@@ -128,6 +130,10 @@ public class TableTest {
                 indexOfCurrentStartingColumn++;
                 currentColumnIndex = indexOfCurrentStartingColumn - 1;
             }
+        }
+
+        for (CardColumn column : columnsFromTable) {
+            column.viewCard().show();
         }
 
         assertEquals(builder.toString(), table.toString());

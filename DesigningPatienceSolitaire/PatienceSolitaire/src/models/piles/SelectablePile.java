@@ -3,6 +3,7 @@ package models.piles;
 import models.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This models.piles.SelectablePile class is an abstract version of the selectable models.piles that exist in Patience Solitaire.
@@ -15,13 +16,13 @@ import java.util.ArrayList;
  * @version 2022-02-21
  */
 public abstract class SelectablePile {
-    protected ArrayList<Card> cards;
+    protected List<Card> cards;
 
     /**
      * Set up the empty list of cards for use.
      */
     public SelectablePile() {
-
+        cards = new ArrayList<>();
     }
 
     /**
@@ -34,7 +35,12 @@ public abstract class SelectablePile {
      * @param cardToAdd The card to be appended to the end of the list
      */
     public void addCard(Card cardToAdd) {
-
+        for (Card card : cards) {
+            if (card.getRank() == cardToAdd.getRank() && card.getSuit() == cardToAdd.getSuit()) {
+                return;
+            }
+        }
+        cards.add(cardToAdd);
     }
 
     /**
@@ -43,7 +49,11 @@ public abstract class SelectablePile {
      * @return The most recently added card
      */
     public Card removeCard() {
-        return null;
+        if (cards.isEmpty()) {
+            return null;
+        }
+
+        return cards.remove(cards.size() - 1);
     }
 
     /**
@@ -55,7 +65,11 @@ public abstract class SelectablePile {
      * @return The most recently added card
      */
     public Card viewCard() {
-        return null;
+        if (cards.isEmpty()) {
+            return null;
+        }
+
+        return cards.get(cards.size() - 1);
     }
 
     /**

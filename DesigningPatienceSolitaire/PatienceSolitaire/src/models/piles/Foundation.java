@@ -1,6 +1,7 @@
 package models.piles;
 
 import models.Card;
+import models.enumerations.Rank;
 
 /**
  * This models.piles.Foundation class represents one of the four models.piles in Patience Solitaire that are built up from Ace to King by the
@@ -23,7 +24,21 @@ public class Foundation extends SelectablePile {
      */
     @Override
     public boolean verifyMoveIsLegal(Card cardToTry) {
-        return super.verifyMoveIsLegal(cardToTry);
+        if (cards.isEmpty()) {
+            if (cardToTry.getRank() == Rank.Ace) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            Card topCard = viewCard();
+
+            if (topCard.getRank().ordinal() + 1 == cardToTry.getRank().ordinal() && topCard.getSuit() == cardToTry.getSuit()) {
+                return true;
+            } else  {
+                return false;
+            }
+        }
     }
 
     /**
@@ -35,7 +50,7 @@ public class Foundation extends SelectablePile {
      * @return True if there are all thirteen cards of the suit in the pile, false otherwise
      */
     public boolean checkFoundationCompleted() {
-        return false;
+        return (viewCard() != null && viewCard().getRank() == Rank.King && cards.size() == 13);
     }
 
     /**
@@ -45,6 +60,10 @@ public class Foundation extends SelectablePile {
      */
     @Override
     public String toString() {
-        return null;
+        if (viewCard() == null) {
+            return "[  ]";
+        } else {
+            return "[" + viewCard() + "]";
+        }
     }
 }

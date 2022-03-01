@@ -121,14 +121,13 @@ public class CardColumnTest {
 
         for (Rank rank : reversedCollection) {
             Suit suit = GeneralTestHelper.generateRandomSuit();
-            int suitOrdinal = suit.ordinal();
+            int suitOrdinalColor = suit.ordinal() % 2;
 
-            Suit otherBadSuit = (suitOrdinal > 1) ? Suit.values()[suitOrdinal - 2] : Suit.values()[suitOrdinal + 2]; // Finds the other black or red suit card
 
             column.addCard(new Card(rank, suit));
 
             for (Card card : everyCard) {
-                if (card.getRank() == Rank.values()[rank.ordinal() - 1] && (card.getSuit() != suit || card.getSuit() != otherBadSuit)) { // If rank is one less and suit is the opposite color
+                if (rank != Rank.Ace && card.getRank() == Rank.values()[rank.ordinal() - 1] && card.getSuit().ordinal() % 2 != suitOrdinalColor) { // If rank is one less and suit is the opposite color
                     assertTrue(column.verifyMoveIsLegal(card));
                 } else {
                     assertFalse(column.verifyMoveIsLegal(card));
@@ -180,7 +179,8 @@ public class CardColumnTest {
 
         List<Card> firstSetBack = column.removeMultipleCards(8);
         for (int i = 0; i < 8; i++) {
-            assertEquals(cardsForTest[i], firstSetBack.get(i));
+            assertEquals(cardsForTest[i + 7].getRank(), firstSetBack.get(firstSetBack.size() - (i + 1)).getRank());
+            assertEquals(cardsForTest[i + 7].getSuit(), firstSetBack.get(firstSetBack.size() - (i + 1)).getSuit());
         }
 
         assertNull(column.removeMultipleCards(8)); // This will verify null because 8 out of the 15 have already been removed
@@ -217,14 +217,18 @@ public class CardColumnTest {
      * cardColumn.viewCardAtPos({any position}) == {the card at that position} // Card is still there
      */
     @Test
-    public void viewCardAtPos() {
+    public void viewCardAtPosTest() {
         assertNull(column.viewCardAtPos(3));
 
         Card[] cardsForTest = GeneralTestHelper.generateRandomUniqueCardArrayOfSpecifiedSize(4);
 
+        for (Card card : cardsForTest) {
+            card.show();
+        }
+
         column.addMultipleCards(List.of(cardsForTest));
 
-        assertEquals(cardsForTest[2], column.viewCardAtPos(3));
+        assertEquals(cardsForTest[1], column.viewCardAtPos(3));
     }
 
     /**
