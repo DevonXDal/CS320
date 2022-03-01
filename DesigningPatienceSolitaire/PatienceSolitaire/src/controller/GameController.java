@@ -5,6 +5,7 @@ import models.Deck;
 import models.Player;
 import models.Table;
 import models.piles.CardColumn;
+import models.piles.Foundation;
 import models.piles.SelectablePile;
 import models.piles.WastePile;
 import other.Command;
@@ -61,6 +62,8 @@ public class GameController implements IController {
     public void initializeGame() {
         CardColumn[] columns = new CardColumn[7];
         Deck deck = table.getDeck();
+        deck.shuffle();
+
         userInterface.setController(this);
 
         for (int i = 1; i <= 7; i++) { // For each foundation, if the foundation is null, an exception will fail the test
@@ -136,8 +139,34 @@ public class GameController implements IController {
 
     // This runs the game loop and queries for the command line for input as needed.
     private void runGameLoop() {
+        Foundation[] foundations = new Foundation[4];
+
+        for (int i = 1; i <= 4; i++) { // For each foundation
+            foundations[i - 1] = (Foundation) table.getSelectablePile("foundation " + i);
+        }
+
         while (isGameLoopContinuing) {
             userInterface.collectAndHandleInput();
+
+            // Check if the game has been won
+            int finishedFoundations = 0;
+            for (Foundation foundation : foundations) {
+                if (foundation.checkFoundationCompleted()) {
+                    finishedFoundations++;
+                }
+            }
+
+            if (finishedFoundations == 4) {
+                userInterface.printWinMessage();
+
+                try {
+                    Thread.sleep(5000); // Gives the user time to read the goodbye message.
+                } catch (InterruptedException ignored) {
+
+                }
+
+                initializeGame();
+            }
         }
 
         try {
@@ -264,7 +293,7 @@ public class GameController implements IController {
         } else if (args.length >= 1 && args.length <= 2) {
             String pileKey = args[0];
 
-            if (args[1] != null) {
+            if (args.length == 2) {
                 pileKey = args[0] + " " + args[1];
             }
 
