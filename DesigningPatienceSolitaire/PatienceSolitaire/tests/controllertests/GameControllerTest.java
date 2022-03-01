@@ -172,8 +172,10 @@ public class GameControllerTest {
         Card columnTwoCard = new Card (Rank.Eight, Suit.Hearts);
 
         for (Card card : columnOneCards) {
-            card.show();
-            twoColumns[0].addCard(card);
+            if (card != null) {
+                card.show();
+                twoColumns[0].addCard(card);
+            }
         }
 
         columnTwoCard.show();
@@ -209,7 +211,10 @@ public class GameControllerTest {
 
 
         for (int i = 1; i <= 12; i++) {
-            piles[i - 1].addCard(new Card(Rank.values()[i - 1], Suit.Hearts));
+            Card currentCard = new Card(Rank.values()[i - 1], Suit.Hearts);
+            currentCard.show();
+
+            piles[i - 1].addCard(currentCard);
         }
 
         MockCommandLine.mockUserInput.add(new Command("select", new String[] {"waste"}));
@@ -225,6 +230,10 @@ public class GameControllerTest {
         MockCommandLine.mockUserInput.add(new Command("exit", new String[0]));
 
         controller.initializeGame(true);
+
+        for (int i = 0; i < 18; i++) { // Clear out the unnecessary system input
+            MockCommandLine.systemOutput.poll();
+        }
 
         for (int i = 0; i < 12; i++) {
             assertTrue(MockCommandLine.systemOutput.poll().contains("Currently Selected Card(s): " + Rank.values()[i] + " of " + Suit.Hearts));
@@ -356,9 +365,6 @@ public class GameControllerTest {
         MockCommandLine.mockUserInput.add(new Command("exit", new String[0])); // Finish the program
 
         controller.initializeGame(true);
-
-        MockCommandLine.systemOutput.poll(); // Get rid of the restart information as it is not useful
-        MockCommandLine.systemOutput.poll(); // Get rid of the initial status because it is not useful either
 
         assertFalse(MockCommandLine.systemOutput.poll().contains("N/A")); // From Current Selection: N/A
         assertNull(player.getSelectedSource());

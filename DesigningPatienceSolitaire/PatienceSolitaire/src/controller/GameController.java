@@ -11,15 +11,17 @@ import other.Command;
 import view.CommandLine;
 import view.ICommandLine;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This controller.GameController represents the controller in an MVC pattern. It handles the internal game loop and logic.
  * It controls the actions taken by the other classes and makes what the other classes do actually useful.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-29
+ * @version 2022-03-01
  */
 public class GameController implements IController {
     private Table table;
@@ -59,9 +61,10 @@ public class GameController implements IController {
     public void initializeGame() {
         CardColumn[] columns = new CardColumn[7];
         Deck deck = table.getDeck();
+        userInterface.setController(this);
 
         for (int i = 1; i <= 7; i++) { // For each foundation, if the foundation is null, an exception will fail the test
-            columns[i] = (CardColumn) table.getSelectablePile("column " + i);
+            columns[i - 1] = (CardColumn) table.getSelectablePile("column " + i);
         }
 
         for (int currentColumnIndex = 0, indexOfCurrentStartingColumn = 0; indexOfCurrentStartingColumn != columns.length; currentColumnIndex++) {
@@ -79,7 +82,7 @@ public class GameController implements IController {
 
         isGameLoopContinuing = true;
 
-        fetchGameStatusUpdate();
+        userInterface.printGameUpdate(fetchGameStatusUpdate());
         runGameLoop();
     }
 
@@ -93,7 +96,7 @@ public class GameController implements IController {
         if (flag) {
             isGameLoopContinuing = true;
 
-            fetchGameStatusUpdate();
+            userInterface.printGameUpdate(fetchGameStatusUpdate());
             runGameLoop();
         } else {
             initializeGame();
@@ -136,6 +139,13 @@ public class GameController implements IController {
         while (isGameLoopContinuing) {
             userInterface.collectAndHandleInput();
         }
+
+        try {
+            Thread.sleep(5000); // Gives the user time to read the goodbye message.
+        } catch (InterruptedException ignored) {
+
+        }
+        System.exit(0);
     }
 
     // This gets the current card selected and the view of the table to send back to the command line.
@@ -150,7 +160,7 @@ public class GameController implements IController {
         if (source == null) {
             builder.append("N/A\n");
         } else {
-            builder.append(source.viewCard() + "\n");
+            builder.append(source.viewCard().toFullName() + "\n");
         }
 
         return builder.toString();
@@ -201,7 +211,7 @@ public class GameController implements IController {
                             }
                         case "deselect":
                             player.alterCurrentSelection(null);
-                            return null;
+                            return fetchGameStatusUpdate();
                         default:
                             return "Unrecognized command";
                     }
@@ -213,8 +223,8 @@ public class GameController implements IController {
         } else if (args.length >= 1 && args.length <= 2) { // General selection
             String pileKey = args[0];
 
-            if (args[1] != null) {
-                pileKey += args[1];
+            if (args.length == 2) {
+                pileKey = args[0] + " " + args[1];
             }
 
             SelectablePile pile = table.getSelectablePile(pileKey);
@@ -255,7 +265,7 @@ public class GameController implements IController {
             String pileKey = args[0];
 
             if (args[1] != null) {
-                pileKey += args[1];
+                pileKey = args[0] + " " + args[1];
             }
 
             SelectablePile destination = table.getSelectablePile(pileKey);
@@ -269,7 +279,6 @@ public class GameController implements IController {
                 player.alterCurrentSelection(null);
                 return fetchGameStatusUpdate();
             } else {
-                player.alterCurrentSelection(null);
                 userInterface.printGameUpdate("Cannot make an illegal move");
                 return fetchGameStatusUpdate();
             }

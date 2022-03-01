@@ -49,7 +49,11 @@ public class Deck {
      * @return The card at the top of the deck.
      */
     public Card draw() {
-        return cards.remove(size() - 1);
+        try {
+            return cards.remove(size() - 1);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     /**

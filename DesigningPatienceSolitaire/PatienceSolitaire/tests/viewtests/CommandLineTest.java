@@ -13,6 +13,7 @@ import view.CommandLine;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -42,7 +43,7 @@ import java.util.concurrent.CompletableFuture;
  * Verify the mock controller receives a command with the command and arguments from the input
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-28
+ * @version 2022-03-01
  */
 public class CommandLineTest {
     private CommandLine commandLine;

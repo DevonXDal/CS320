@@ -5,6 +5,8 @@ import other.Command;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * This view.CommandLine class represents the view in an MVC pattern. It is the I/O handling class and receives input
@@ -12,19 +14,21 @@ import java.io.OutputStream;
  * controller it is assigned.
  *
  * @author Devon X. Dalrymple
- * @version 2022-02-29
+ * @version 2022-03-01
  */
 public class CommandLine implements ICommandLine {
-    private InputStream inputStream;
-    private OutputStream outputStream;
+    private InputStream inputStream; // Output stream is removed since it was not used at all
     private IController controller;
 
 
     /**
-     * Creates a new command line object that sets up its input and output streams that it communicates through.
+     * Creates a new command line object that sets up its input stream that it communicates through. It also prints a
+     * welcome message.
      */
     public CommandLine() {
+        inputStream = System.in;
 
+        printWelcomeMessage();
     }
 
     /**
@@ -37,7 +41,7 @@ public class CommandLine implements ICommandLine {
      * @param controller The controller that the command line should pass along unknown commands to
      */
     public void setController(IController controller) {
-
+        this.controller = controller;
     }
 
     /**
@@ -47,9 +51,32 @@ public class CommandLine implements ICommandLine {
      *
      * Why: This is the way that almost all input will be taken from the user (the exception is moving multiple cards at
      * the same time.
+     *
+     * https://www.techiedelight.com/get-subarray-array-specified-indexes-java/
      */
     public void collectAndHandleInput() {
+        Command newCommand = takeInput();
+        String output = null;
 
+        switch (newCommand.getCommand()) {
+            case "rules":
+                printRules();
+                break;
+            case "help":
+                printCommands();
+                break;
+            case "exit":
+                System.out.println("Thanks for playing! Play again soon!");
+                controller.sendInput(newCommand);
+                break;
+            default:
+                output = controller.sendInput(newCommand);
+                break;
+        }
+
+        if (output != null) {
+            System.out.println(output);
+        }
     }
 
     /**
@@ -60,8 +87,9 @@ public class CommandLine implements ICommandLine {
      * @return The command to be handled by the controller
      */
     public Command requestMultiCardMoveDestination() {
-        return null;
+        return takeInput();
     }
+
 
     /**
      * Takes in additional information (usually just the table and the current selection) and prints that update from the
@@ -74,7 +102,7 @@ public class CommandLine implements ICommandLine {
      * @param updateInformation The text to be printed to the screen for the user to see
      */
     public void printGameUpdate(String updateInformation) {
-
+        System.out.println(updateInformation);
     }
 
     /**
@@ -82,17 +110,66 @@ public class CommandLine implements ICommandLine {
      * starts a new game/round for the person to play.
      */
     public void printWinMessage() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+        builder.append("Congratulations, you have successfully built up your foundations. A new game will start in five " +
+                "seconds. Feel free to ‘exit’ after the game resets to close the game.\n");
+        builder.append("\n");
 
+        System.out.println(builder);
     }
 
     // Prints a summarized version of the rules and links to the Bicycle rules page for a more detailed explanation.
     private void printRules() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+        builder.append("In Patience Solitaire, the game by shuffling a deck of cards and dealing one card from left to right" +
+                " to the card columns. Each time doing one less card column (the left most column that got a card last time)."+
+                " When all columns have been dealt cards from 1-7 cards, the remaining 24 cards in the deck are placed as " +
+                "the draw/stockpile. Cards can be drawn one at a time from the deck and placed in the waste pile to the right"+
+                " face up. The bottom most card (last recently put in) for each card column is turned face up. As the bottom card"+
+                " is removed from these card columns, if the newest bottom card is face down, it becomes face up.");
+        builder.append("\n");
+        builder.append("The top card of the waste pile, bottom card(s) that are face up on the columns, or the top card of a "+
+                "foundation can be moved to another location. A card can start an empty pile if it is a King. A pile can"+
+                " be moved to, to start a foundation if it is an Ace. To play a card on a foundation with other cards,"+
+                " the card to move to the foundation must be one rank higher and of the same suit as the foundation’s "+
+                " top card to be moved. To move a card to a card column with cards, the card must be one rank less and "+
+                "of the different suit color (Diamonds and Hearts are red; Clubs and Spades are black) then the bottom most "+
+                "column card. If no cards are left in the deck. Cards can be refilled into the deck from the waste pile as "+
+                "though the stack of cards was flipped over to be all face down and placed in the deck.");
+        builder.append("\n");
+        builder.append("If each foundation has been built up to have a King as the top card for each, then the game has been won.");
+        builder.append("\n");
+        builder.append("More detailed rules can be found at: https://bicyclecards.com/how-to-play/solitaire/");
+        builder.append("\n\n");
 
+        System.out.println(builder);
     }
 
     // Prints the list of available commands, their syntax, a description of what they do
     private void printCommands() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+        builder.append("help – Prints the list of commands, their syntax, and descriptions\n");
+        builder.append("rules – Prints the rules for the game Patience Solitaire\n");
+        builder.append("select {foundation/column} {num} OR select waste – Selects the specified source if the source has " +
+                "at least one card; num is the position from left to right on the display that, that source appears in relation " +
+                "to others of the same type\n");
+        builder.append("deselect – Deselects the currently selected card(s)\n");
+        builder.append("move {foundation/column} {num} – Moves the currently selected card to the specified destination if" +
+                " legal; num is the position from left to right on the display that, that destination appears in relation " +
+                "to the others of the same type\n");
+        builder.append("draw – Draws the top card from the deck and places it face up in the waste pile; if the deck is " +
+                "empty, it will be refilled with the cards from the waste pile if the waste pile has cards\n");
+        builder.append("select {amount} cards from column {num} – Selects multiple cards to move simultaneously from one" +
+                " column to another if legal; amount is the amount of cards from the bottom of the selection to move at " +
+                "the same time; num is the position from left to right of the source column\n");
+        builder.append("restart – Resets the table with a new distribution of cards and play begins anew\n");
+        builder.append("exit – Stops the game and then closes the application shortly afterwards\n");
+        builder.append("\n");
 
+        System.out.println(builder);
     }
 
     /*
@@ -100,7 +177,41 @@ public class CommandLine implements ICommandLine {
     * the game
     *
      */
-    private void welcomeMessage() {
+    private void printWelcomeMessage() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n");
+        builder.append("Welcome to a command-line variation of Patience Solitaire. In order to start, try using the " +
+                "‘rules’ or ‘help’ commands to learn how to interact with the game.\n");
+        builder.append("\n");
 
+        System.out.println(builder);
+    }
+
+    /*
+    Takes in the next line of input from the user, turns it into a command and returns it for processing
+     */
+    private Command takeInput() {
+        while (true) { // True until the return statement is hit
+            Scanner scanner = new Scanner(inputStream);
+
+            System.out.print("> ");
+            String inputLine = scanner.nextLine().replace("> ", "").trim(); // Take in the input
+
+            String[] inputParts = inputLine.split(" ");
+
+            if (inputParts.length > 0) {
+                Command newCommand;
+
+                if (inputParts.length > 1) {
+                    String[] arguments = Arrays.copyOfRange(inputParts, 1, inputParts.length);
+
+                    newCommand = new Command(inputParts[0], arguments);
+                } else {
+                    newCommand = new Command(inputParts[0], new String[0]);
+                }
+
+                return newCommand;
+            }
+        }
     }
 }
