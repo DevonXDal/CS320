@@ -10,10 +10,7 @@ import org.junit.Test;
 import other.Command;
 import view.CommandLine;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -63,6 +60,7 @@ public class CommandLineTest {
         mockInputStream = System.in;
         systemOutput = System.out;
 
+        System.setIn(new ByteArrayInputStream("help\n".getBytes()));
         commandLine = new CommandLine();
         controller = new MockController();
 
@@ -107,12 +105,13 @@ public class CommandLineTest {
 
         CompletableFuture.runAsync(() -> {
             try {
-                wait(1500); // This ensures that time is allowed for the command line to start asking for input.
+                wait(2500); // This ensures that time is allowed for the command line to start asking for input.
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            System.setIn(new ByteArrayInputStream("help".getBytes()));
+            System.setIn(new ByteArrayInputStream("help\n".getBytes()));
+
         });
 
         commandLine.collectAndHandleInput();
@@ -299,6 +298,27 @@ public class CommandLineTest {
     @After
     public void resetInputStreamForSystem() {
         System.setIn(oldSystemIn);
+    }
+
+
+    // Ignore this
+    @Test
+    public void troubleshootingTest() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                wait(2500); // This ensures that time is allowed for the command line to start asking for input.
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.setIn(new ByteArrayInputStream("help\n".getBytes()));
+
+        });
+
+        commandLine.collectAndHandleInput();
+
+        assertTrue(systemOutput.toString().contains("> "));
+        //assertTrue(systemOutput.toString().contains(builder.toString()));
     }
 
 }
