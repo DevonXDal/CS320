@@ -28,22 +28,28 @@ public class Card {
         isVisible = false;
     }
 
-    /**
-     * Gets the card's rank.
-     *
-     * @return The alphanumeric character found on a playing card represented as an enumeration.
-     */
     public Rank getRank() {
         return rank;
     }
 
-    /**
-     * Gets the card's suit.
-     *
-     * @return The shape found on a playing card represented as an enumeration.
-     */
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
     public Suit getSuit() {
         return suit;
+    }
+
+    public void setSuit(Suit suit) {
+        this.suit = suit;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     /**
