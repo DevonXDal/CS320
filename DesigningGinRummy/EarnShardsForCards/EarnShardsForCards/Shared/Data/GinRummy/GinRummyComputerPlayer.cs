@@ -37,5 +37,23 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             return false;
         }
+
+        /// <summary>
+        /// Return a card that will be removed from the hand as a discard action
+        /// </summary>
+        /// <returns>The card that the computer player removed from their hand to discard</returns>
+        public T SelectAndRemoveDiscardedCard()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public T DetermineKnockOrDiscardAction()
+        {
+            return null;
+        }
     }
 }
