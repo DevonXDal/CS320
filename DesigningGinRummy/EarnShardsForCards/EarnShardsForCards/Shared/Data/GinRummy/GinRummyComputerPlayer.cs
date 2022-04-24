@@ -48,10 +48,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         }
 
         /// <summary>
-        /// 
+        /// Determines whether or not to knock or discard. Returns null if a knock is not performed.
         /// </summary>
-        /// <returns></returns>
-        public T DetermineKnockOrDiscardAction()
+        /// <returns>Either null or a card from the hand that the computer wishes to knock with</returns>
+        public T? DetermineKnockOrDiscardAction()
         {
             return null;
         }
