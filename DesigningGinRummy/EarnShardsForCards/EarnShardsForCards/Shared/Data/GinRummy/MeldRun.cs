@@ -58,7 +58,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// Adds a card to the meld without verification that the card can be added.
         /// </summary>
         /// <param name="card">The card to be added</param>
-        public void Insert(PlayingCard card)
+        public IMeld Insert(PlayingCard card)
         {
             throw new NotImplementedException();
         }

@@ -32,7 +32,7 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// Adds a card to the meld without verification that the card can be added.
         /// </summary>
         /// <param name="card">The card to be added</param>
-        public void Insert(PlayingCard card);
+        public IMeld Insert(PlayingCard card);
 
         /// <summary>
         /// Determines the deadwood that is removed from this meld being formed.
