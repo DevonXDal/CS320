@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EarnShardsForCards.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EarnShardsForCards.Shared", "EarnShardsForCards\Shared\EarnShardsForCards.Shared.csproj", "{067AFE0F-39DA-4854-AC9E-99E23A076313}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarnShardsForCards.Test", "EarnShardsForCards.Test\EarnShardsForCards.Test.csproj", "{030B4133-693F-4555-BC3B-7E076CF27884}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EarnShardsForCards.Test", "EarnShardsForCards.Test\EarnShardsForCards.Test.csproj", "{030B4133-693F-4555-BC3B-7E076CF27884}"
+	ProjectSection(ProjectDependencies) = postProject
+		{067AFE0F-39DA-4854-AC9E-99E23A076313} = {067AFE0F-39DA-4854-AC9E-99E23A076313}
+		{A316744B-54E8-43D5-97D3-6BFBE09790EA} = {A316744B-54E8-43D5-97D3-6BFBE09790EA}
+		{57017D79-C984-4F82-83B2-46967657637B} = {57017D79-C984-4F82-83B2-46967657637B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

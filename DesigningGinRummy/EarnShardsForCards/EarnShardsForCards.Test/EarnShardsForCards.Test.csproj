@@ -29,4 +29,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EarnShardsForCards\Shared\EarnShardsForCards.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
