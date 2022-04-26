@@ -9,8 +9,11 @@ namespace EarnShardsForCards.Test.Models
 {
     /// <summary>
     /// Tests the implementations of the Card class
+    /// 
+    /// 
     /// </summary>
     public class CardTest<T> where T : Card
     {
+        
     }
 }

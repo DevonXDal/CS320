@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace EarnShardsForCards.Shared.Data.GenericGameObjects
 {
+    /// <summary>
+    /// A PlayingCard represents the real-world card from a standard 52-card deck. 
+    /// It holds information about its rank and suit. 
+    /// It can either be face up or face down with the facedown side revealing no rank or suit information. 
+    /// All cards have the same face down representation but each face up representation is unique 
+    /// from the others.
+    /// 
+    /// </summary>
     public class PlayingCard : Card
     {
         public Rank Rank { get; init; }
