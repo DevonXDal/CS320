@@ -32,6 +32,9 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
             Rank = rank;
             Suit = suit;
             Value = value;
+            IsVisible = false;
+            FaceDownImagePath = "~/img/PlayingCard/Back.webp";
+            FaceUpImagePath = $"~/img/PlayingCard/{rank}-{suit}.webp";
         }
 
         /// <summary>
@@ -41,6 +44,11 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <returns>Are both the same card?</returns>
         public override bool Equals(object? obj)
         {
+            if (obj is PlayingCard other)
+            {
+                return Rank == other.Rank && Suit == other.Suit;
+            }
+            
             return false;
         }
     }
