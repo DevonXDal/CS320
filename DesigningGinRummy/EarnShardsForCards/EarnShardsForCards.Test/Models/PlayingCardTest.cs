@@ -7,6 +7,7 @@ using EarnShardsForCards.Shared.Data.Enumerations;
 using EarnShardsForCards.Shared.Data.GenericGameObjects;
 using FluentAssertions;
 using Xunit;
+using static EarnShardsForCards.Test.TestHelpers.GeneralTestingAssister;
 
 namespace EarnShardsForCards.Test.Models
 {
@@ -110,26 +111,6 @@ namespace EarnShardsForCards.Test.Models
                 card.Equals(new PlayingCard(rank, differentSuit, value)).Should().BeFalse(); // Different suit
                 card.Equals(new PlayingCard(differentRank, differentSuit, value)).Should().BeFalse(); // Different rank and suit
             });
-        }
-        
-        /// <summary>
-        /// Takes a function and invokes it using the card generated, along with the rank, suit, and value used.
-        /// </summary>
-        /// <param name="action">The function to invoke</param>
-        public void RunFunctionUsingEachPlayingCard(Action<PlayingCard, Rank, Suit, int> action)
-        {
-            // Arrange
-            foreach (Rank rank in Enum.GetValues<Rank>())
-            {
-                foreach (Suit suit in Enum.GetValues<Suit>())
-                {
-                    int value = (int)rank + (int)suit;
-                    PlayingCard card = new PlayingCard(rank, suit, value);
-
-                    // Act
-                    action.Invoke(card, rank, suit, value);
-                }
-            }
-        }
+        } 
     }
 }

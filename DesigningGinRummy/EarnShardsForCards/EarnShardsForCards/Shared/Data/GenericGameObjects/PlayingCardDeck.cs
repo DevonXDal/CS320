@@ -12,34 +12,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
     /// It is created usually with 52 playing cards. Cards can be drawn from it and return as requested. 
     /// It also randomizes the position of the cards it holds when requested.
     /// </summary>
-    public class PlayingCardDeck : Deck
+    public class PlayingCardDeck<T> : Deck<T> where T : PlayingCard
     {
-        protected IList<PlayingCard> cards;
-
-        /// <summary>
-        /// Reveal the number of cards that are currently in the deck.
-        /// </summary>
-        /// <returns>The number of cards left in the deck</returns>
-        public override int Count()
-        {
-            return cards.Count;
-        }
-
-        /// <summary>
-        /// Draw a card from the top of the deck.
-        /// </summary>
-        /// <returns>The top card of the deck</returns>
-        public override PlayingCard Draw()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Randomize the position of the cards
-        /// </summary>
-        public override void Shuffle()
-        {
-            
-        }
     }
 }
