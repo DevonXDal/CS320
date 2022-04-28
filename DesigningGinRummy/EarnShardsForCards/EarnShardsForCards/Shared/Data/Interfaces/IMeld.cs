@@ -18,8 +18,9 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// Create a meld set from three or four cards that have the same rank
         /// </summary>
         /// <param name="cards">The cards used to create the meld</param>
+        /// <param name="isAroundTheWorld">Whether the meld is for the around the world variation</param>
         /// <returns>Either the meld that was created, or if the meld cannot be formed by the cards, null</returns>
-        public IMeld? GenerateMeldFromCards(IList<PlayingCard> cards);
+        public static abstract IMeld? GenerateMeldFromCards(IList<PlayingCard> cards, bool isAroundTheWorld = false);
 
         /// <summary>
         /// Verifies that a new card is able to become part of the meld.

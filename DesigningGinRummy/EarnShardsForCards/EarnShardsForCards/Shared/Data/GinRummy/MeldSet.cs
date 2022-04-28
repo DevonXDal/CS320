@@ -32,7 +32,14 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <returns>Whether the new card can be added</returns>
         public bool CanAddNewCard(PlayingCard newCard)
         {
-            throw new NotImplementedException();
+            // If the meld has three cards and the new card is the same rank as the first card it can be added
+            if (Cards.Count == 3 && Cards[0].Rank == newCard.Rank)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -41,7 +48,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <returns>The deadwood removed by the set</returns>
         public int DeadwoodRemovedByMeld()
         {
-            throw new NotImplementedException();
+            return Cards.Sum(c => c.Value);
         }
 
         /// <summary>
@@ -49,18 +56,38 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// </summary>
         /// <param name="cards">The cards used to create the meld</param>
         /// <returns>Either the meld that was created, or if the meld cannot be formed by the cards, null</returns>
-        public IMeld? GenerateMeldFromCards(IList<PlayingCard> cards)
+        public static IMeld? GenerateMeldFromCards(IList<PlayingCard> cards, bool isAroundTheWorld = false)
         {
-            throw new NotImplementedException();
+            // If there are not three or four cards, the meld cannot be formed
+            if (cards.Count != 3 && cards.Count != 4)
+            {
+                return null;
+            }
+
+            // If the cards are not all the same rank, the meld cannot be formed
+            if (cards.Any(c => c.Rank != cards[0].Rank))
+            {
+                return null;
+            }
+
+            // The set can be formed
+            return new MeldSet(cards);
         }
 
         /// <summary>
         /// Adds a card to the meld without verification that the card can be added.
+        /// This returns as a new meld set. The current one is not modified.
         /// </summary>
         /// <param name="card">The card to be added</param>
+        /// <returns>The new meld set</returns>
         public IMeld Insert(PlayingCard card)
         {
-            throw new NotImplementedException();
+            // Create a new list of cards
+            List<PlayingCard> newCards = new List<PlayingCard>(Cards);
+            newCards.Add(card);
+
+            // Create the new meld set
+            return new MeldSet(newCards);
         }
     }
 }

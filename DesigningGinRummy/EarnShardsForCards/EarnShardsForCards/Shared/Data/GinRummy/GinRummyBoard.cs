@@ -17,7 +17,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
     {
         public GinRummyComputerPlayer<PlayingCard> ComputerPlayer { get; private set; }
         public Player<PlayingCard> Player { get; private set; }
-        public PlayingCardDeck Deck { get; private set; }
+        public PlayingCardDeck<PlayingCard> Deck { get; private set; }
         public DiscardPile<PlayingCard> DiscardPile { get; private set; }
 
         /// <summary>

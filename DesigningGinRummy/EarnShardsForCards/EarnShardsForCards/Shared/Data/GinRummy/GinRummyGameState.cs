@@ -37,6 +37,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         public GinRummyGameState(bool isAroundTheWorld, int winCondition, TurnState firstToPlay)
         {
             PointsRequiredForWin = winCondition;
+            IsAroundTheWorld = isAroundTheWorld;
+            CurrentPlayersTurn = firstToPlay;
         }
 
         /// <summary>
@@ -48,7 +50,18 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <returns>The integer value that matches the current state of the game information</returns>
         public int CheckIfGameIsWon()
         {
-            return 0;
+            if (PointsForComputerPlayerPerRound.Sum() >= PointsRequiredForWin)
+            {
+                return -1;
+            }
+            else if (PointsForHumanPlayerPerRound.Sum() >= PointsRequiredForWin)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

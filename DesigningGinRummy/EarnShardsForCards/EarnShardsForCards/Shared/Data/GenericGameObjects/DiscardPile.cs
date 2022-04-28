@@ -38,12 +38,20 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         }
 
         /// <summary>
-        /// Remove a card from the top and return it
+        /// Remove a card from the top of the pile and return it
         /// </summary>
         /// <returns>The card removed and returned from the top of the pile</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the discard pile is empty</exception>
         public T Draw()
         {
-            return null;
+            if (Cards.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot draw from an empty discard pile");
+            }
+
+            T card = Cards[Cards.Count - 1] as T;
+            Cards.RemoveAt(Cards.Count - 1);
+            return card;
         }
 
         /// <summary>
@@ -52,7 +60,12 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <returns>The image representation of this discard pile</returns>
         public string GetImageFilePath()
         {
-            return EmptyImageRepresentation;
+            if (Cards.Count == 0)
+            {
+                return EmptyImageRepresentation;
+            }
+
+            return Cards[Cards.Count - 1].GetImageFilePath();
         }
 
         /// <summary>

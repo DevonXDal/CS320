@@ -36,11 +36,17 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
 
         /// <summary>
         /// Remove and return a card from a specific index in the hand. Shifts the index of each card after the removed card to the left by one.
+        /// Returns null if the index is out of range.
         /// </summary>
         /// <param name="index">The index that the card can be found.</param>
         /// <returns>The removed card</returns>
-        public T RemoveAt(int index)
+        public T? RemoveAt(int index)
         {
+            if (index < 0 || index >= Cards.Count)
+            {
+                return null;
+            }
+
             var card = Cards[index];
             Cards.RemoveAt(index);
             return card;
