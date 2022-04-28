@@ -19,13 +19,15 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         protected string FaceDownImagePath {  get;  set; }
 
         /// <summary>
-        /// Sets up the visibility for any type of game card but does not set the image paths.
+        /// Creates an instance of a card with the given face up and face down images.
         /// </summary>
-        public Card()
+        /// <param name="cardFrontImagePath">The image for the card that will be shown to the user when card's front is shown</param>
+        /// <param name="cardBackImagePath">The image for the card that will be shown to the user when the card's back is shown</param>
+        public Card(string cardFrontImagePath, string cardBackImagePath)
         {
             IsVisible = false;
-            FaceUpImagePath = "";
-            FaceDownImagePath = "";
+            FaceUpImagePath = cardFrontImagePath;
+            FaceDownImagePath = cardBackImagePath;
         }
 
         /// <summary>

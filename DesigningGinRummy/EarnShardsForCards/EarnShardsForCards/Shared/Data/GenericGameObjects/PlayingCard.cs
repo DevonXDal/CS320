@@ -27,15 +27,14 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <param name="rank">The alphanumeric character that aids in identification</param>
         /// <param name="suit">The shape that aids in identification</param>
         /// <param name="value">The value that the card has in relation to a game</param>
-        public PlayingCard(Rank rank, Suit suit, int value) : base()
+        public PlayingCard(Rank rank, Suit suit, int value) : base($"~/img/PlayingCard/{rank}-{suit}.webp", "~/img/PlayingCard/Back.webp")
         {
             Rank = rank;
             Suit = suit;
             Value = value;
-            IsVisible = false;
-            FaceDownImagePath = "~/img/PlayingCard/Back.webp";
-            FaceUpImagePath = $"~/img/PlayingCard/{rank}-{suit}.webp";
         }
+        
+        
 
         /// <summary>
         /// Checks to see if both cards have the same rank and suit combination.
