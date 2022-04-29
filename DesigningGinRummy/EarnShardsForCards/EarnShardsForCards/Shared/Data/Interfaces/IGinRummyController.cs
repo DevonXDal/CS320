@@ -72,8 +72,9 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// <summary>
         /// Get the deadwood remaining for the computer player.
         /// </summary>
+        /// <param name="handToCalculateWith">The hand to calculate with. This hand should be either 10 or 11 cards</param>
         /// <returns>The deadwood remaining for the computer player</returns>
-        public int CheckComputerPlayerDeadwood();
+        public int CheckComputerPlayerDeadwood(IList<PlayingCard> handToCalculateWith);
 
         /// <summary>
         /// Receive Indication that display of end of round information has begun displaying

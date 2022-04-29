@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>EarnShardsForCards.Server-1557ED4D-98BD-4E69-9E82-9849737DAA74</UserSecretsId>
 	<AnalysisMode>Recommended</AnalysisMode>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
   </PropertyGroup>
 
   <ItemGroup>

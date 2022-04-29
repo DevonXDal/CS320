@@ -15,14 +15,14 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
     /// <typeparam name="T">Represents some type of card for a card/board game</typeparam>
     public class Player<T> where T : Card?
     {
-        public IList<T> Cards { get; init; }
+        public IList<T> Hand { get; init; }
 
         /// <summary>
         /// Create a new player with an empty hand
         /// </summary>
         public Player()
         {
-            Cards = new List<T>();
+            Hand = new List<T>();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <returns>How many cards are in the player's hand</returns>
         public int Count()
         {
-            return Cards.Count;
+            return Hand.Count;
         }
 
         /// <summary>
@@ -42,13 +42,13 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <returns>The removed card</returns>
         public T? RemoveAt(int index)
         {
-            if (index < 0 || index >= Cards.Count)
+            if (index < 0 || index >= Hand.Count)
             {
                 return null;
             }
 
-            var card = Cards[index];
-            Cards.RemoveAt(index);
+            var card = Hand[index];
+            Hand.RemoveAt(index);
             return card;
         }
 
@@ -59,7 +59,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <param name="card">The game card to add to the hand</param>
         public void Insert(int index, T card)
         {
-            Cards.Insert(index, card);
+            Hand.Insert(index, card);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// </summary>
         public void Clear()
         {
-            Cards.Clear();
+            Hand.Clear();
         }
     }
 }
