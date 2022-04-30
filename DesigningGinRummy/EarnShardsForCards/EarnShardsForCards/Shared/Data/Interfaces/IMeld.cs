@@ -14,6 +14,8 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
     /// </summary>
     public interface IMeld
     {
+        public IList<PlayingCard> Cards { get; init; }
+
         /// <summary>
         /// Create a meld set from three or four cards that have the same rank
         /// </summary>

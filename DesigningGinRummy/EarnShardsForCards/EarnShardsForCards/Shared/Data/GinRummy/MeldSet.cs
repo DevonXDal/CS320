@@ -17,7 +17,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
     /// </summary>
     public class MeldSet : IMeld
     {
-        public IList<PlayingCard> Cards { get; private set; }
+        public IList<PlayingCard> Cards { get; init; }
 
         // Creates the meld using the cards provided.
         private MeldSet(IList<PlayingCard> cards)

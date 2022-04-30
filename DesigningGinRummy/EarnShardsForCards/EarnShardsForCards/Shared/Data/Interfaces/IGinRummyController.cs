@@ -92,7 +92,8 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// <param name="winner">The reference to the player that won</param>
         /// <param name="points">The amount of points won by the player</param>
         /// <param name="reason">The round ending reason</param>
-        public void DocumentRoundResults(Player<PlayingCard> winner, int points, GinRummyRoundEndingCase reason);
+        /// <param name="laidOffDeadwood">The amount of deadwood laid off by the non-knocking player. Defaults to 0</param>
+        public void DocumentRoundResults(Player<PlayingCard> winner, int points, GinRummyRoundEndingCase reason, int laidOffDeadwood = 0);
 
         /// <summary>
         /// Returns data used to render graphical elements to the screen after each state update.
