@@ -15,6 +15,10 @@
 # Compiled class file
 *.class
 
+# Files containing secrets
+secrets.json
+*.env
+
 # Log file
 *.log
 
