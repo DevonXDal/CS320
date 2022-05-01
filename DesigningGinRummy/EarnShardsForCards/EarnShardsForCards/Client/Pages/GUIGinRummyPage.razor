@@ -1,10 +1,39 @@
 ﻿@page "/"
 @page "/GinRummy"
+@using EarnShardsForCards.Client.Data
+@using EarnShardsForCards.Shared.Data.GenericGameObjects
+@using EarnShardsForCards.Shared.Data.GinRummy
+@using EarnShardsForCards.Shared.Data.Interfaces
 
+@inherits SubscriberComponent
 @inject IConfiguration Configuration
+
+@{ 
+    base.BuildRenderTree(__builder);
+}
 
 <PageTitle>Play Gin Rummy Online</PageTitle>
 
 @code {
+    private IGinRummyController? _controller;
 
+    private Notifier? _gameUpdateNotifier;
+
+    /// <summary>
+    /// Configure the starting state of the page with the board darkened, three dropdowns, a start game button, and information below on how to play.
+    /// </summary>
+    /// <returns>Nothing</returns>
+    protected override async Task OnInitializedAsync()
+    {
+        _controller = GinRummyController.GetInstance(); // May need changed later on
+        _gameUpdateNotifier = _controller.FetchNotifier();
+        _gameUpdateNotifier.Subscribe(this); // Subscribe to the notifier so that we can update the page when the game state changes
+
+        base.OnInitializedAsync();
+    }
+
+    public override void Notify()
+    {
+        
+    }
 }

@@ -109,5 +109,11 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// </summary>
         /// <returns>End of round related information</returns>
         public EndOfRoundData FetchEndOfRoundData();
+
+        /// <summary>
+        /// Fetches the notifier for the game.
+        /// </summary>
+        /// <returns>The observer object used to indicate game state changes</returns>
+        public Notifier FetchNotifier();
     }
 }

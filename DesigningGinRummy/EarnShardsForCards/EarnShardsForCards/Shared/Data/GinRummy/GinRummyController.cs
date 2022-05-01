@@ -33,6 +33,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         private GinRummyController()
         {
             _board = new GinRummyBoard();
+            _notifier = new Notifier();
 
         }
 
@@ -205,6 +206,15 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         public void SetupNextRound()
         {
 
+        }
+
+        /// <summary>
+        /// Fetches the notifier for the game.
+        /// </summary>
+        /// <returns>The observer object used to indicate game state changes</returns>
+        public Notifier FetchNotifier()
+        {
+            return _notifier;
         }
     }
 }
