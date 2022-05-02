@@ -46,8 +46,58 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// it handles notifying of the score and other information to the user.
         /// </summary>
         /// <param name="isBigGin">Whether the round ended by Big Gin</param>
-        public void RewardPoints(bool isBigGin)
+        public void RewardPoints(bool isBigGin, Player<PlayingCard> roundEndingPlayer)
         {
+            EliminateDeadwoodData deadwoodDataForREPlayer; // Round ending player data
+            EliminateDeadwoodData deadwoodDataForNREPlayer; // Non-round ending player data
+            Player<PlayingCard> nonRoundEndingPlayer = (roundEndingPlayer == _humanPlayer) ? _computerPlayer : _humanPlayer;
+
+            bool isGinOfAnyForm = isBigGin;
+
+            if (isBigGin)
+            {
+                deadwoodDataForNREPlayer = EliminateDeadwood(nonRoundEndingPlayer, null, null);
+                deadwoodDataForREPlayer = new EliminateDeadwoodData(0, new List<MeldSet>(), new List<MeldRun>()); // Code thinks it is not assigned when handling Gin so an object removes the compilation error
+            } else
+            {
+                deadwoodDataForREPlayer = EliminateDeadwood(roundEndingPlayer, null, null);
+
+                if (deadwoodDataForREPlayer.RemainingDeadwood == 0)
+                {
+                    isGinOfAnyForm = true;
+                    deadwoodDataForNREPlayer = EliminateDeadwood(nonRoundEndingPlayer, null, null);
+                } else
+                {
+                    deadwoodDataForNREPlayer = EliminateDeadwood(
+                        nonRoundEndingPlayer, 
+                        deadwoodDataForREPlayer.UsedSets, 
+                        deadwoodDataForREPlayer.UsedRuns);
+                }
+            }
+
+            // Check if there was gin of any kind otherwise it was a knock
+            if (isGinOfAnyForm)
+            {
+                // Check if the round ended by Big Gin
+                if (isBigGin)
+                {
+                    DocumentResults(roundEndingPlayer, 31 + deadwoodDataForNREPlayer.RemainingDeadwood, GinRummyRoundEndingCase.BigGin); // Big Gin Bonus! 31!
+                }
+                else
+                {
+                    DocumentResults(roundEndingPlayer, 25 + deadwoodDataForNREPlayer.RemainingDeadwood - deadwoodDataForREPlayer.RemainingDeadwood, GinRummyRoundEndingCase.Gin); // Gin Bonus! 25!
+                }
+            }
+            else
+            {
+                if (deadwoodDataForNREPlayer.RemainingDeadwood <= deadwoodDataForREPlayer.RemainingDeadwood) // Undercut Bonus! 25! But for the non-round ending player
+                {
+                    DocumentResults(nonRoundEndingPlayer, 25 + deadwoodDataForREPlayer.RemainingDeadwood - deadwoodDataForNREPlayer.RemainingDeadwood, GinRummyRoundEndingCase.Undercut); 
+                } else // Normal knock occured
+                {
+                    DocumentResults(roundEndingPlayer, deadwoodDataForNREPlayer.RemainingDeadwood - deadwoodDataForREPlayer.RemainingDeadwood, GinRummyRoundEndingCase.Knock);
+                }
+            }
 
         }
 
@@ -57,9 +107,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <param name="winner">A reference to whoever won the round</param>
         /// <param name="points">The points to award that player</param>
         /// <param name="reason">The reason the round ended</param>
-        private void DocumentResults(Player<PlayingCard> winner, int points, GinRummyRoundEndingCase reason)
+        /// <param name="laidOffDeadwoodAmount">The amount of deadwood that was laid off by the non-knocking player if any</param>
+        private void DocumentResults(Player<PlayingCard> winner, int points, GinRummyRoundEndingCase reason, int laidOffDeadwoodAmount = 0)
         {
-
+            _controller.DocumentRoundResults(winner, points, reason, laidOffDeadwoodAmount);
         }
 
         /// <summary>
@@ -109,17 +160,46 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 RecursivelyIdentifyMeldCombinations(deadwood, meldCombinations, meldCombination); // Recursively identify all possible meld combinations
             }
 
-            return null;
+            int bestMeldForTheJobIndex = 0; // Which meld combination will remove the most deadwood
+            int remainingDeadwoodAmount = 0; // The amount of deadwood that will be eliminated
+
+            for (int i = 0; i < meldCombinations.Count; i++) // For each meld combination
+            {
+                int deadwoodAmount = GetRemainingDeadwoodCards(hand, meldCombinations[i]).Sum(c => c.Value); // Get the amount of deadwood that is left over
+                if (deadwoodAmount < remainingDeadwoodAmount) // If the amount of deadwood is less than the current best
+                {
+                    remainingDeadwoodAmount = deadwoodAmount; // Set the new best amount of deadwood
+                    bestMeldForTheJobIndex = i; // Set the index of the best meld combination
+                }
+            }
+
+            List<MeldRun> runsUsed = new();
+            List<MeldSet> setsUsed = new();
+
+            foreach (IMeld meld in meldCombinations[bestMeldForTheJobIndex]) // For each meld in the best meld combination
+            {
+                if (meld is MeldRun) // If the meld is a run
+                {
+                    runsUsed.Add((MeldRun)meld); // Add the run to the list of runs used
+                }
+                else // If the meld is a set
+                {
+                    setsUsed.Add((MeldSet)meld); // Add the set to the list of sets used
+                }
+            }
+
+            return new EliminateDeadwoodData(remainingDeadwoodAmount, setsUsed, runsUsed); // Return the data around deadwood elimination
         }
 
         /// <summary>
         /// Determine if the provided player can knock given the cards in their hand.
+        /// Remove the card to knock before providing, temporarily, so that accurate information is generated.
         /// </summary>
         /// <param name="player">The player to see if knocking is allowed</param>
         /// <returns>True if the player can knock (10 or less deadwood)</returns>
         public bool CanPlayerKnock(Player<PlayingCard> player)
         {
-            return false;
+            return (EliminateDeadwood(player, null, null).RemainingDeadwood <= 10); // Player must have 10 or less deadwood to knock
         }
 
         /// <summary>
@@ -129,7 +209,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <returns>True if the player has Big Gin</returns>
         public bool DoesPlayerHaveBigGin(Player<PlayingCard> player)
         {
-            return false;
+            return (EliminateDeadwood(player, null, null).RemainingDeadwood == 0);
         }
 
         // Find all the meld sets that can be created from the provided cards
@@ -291,7 +371,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             List<MeldSet> meldSets = new();
             FindMeldSets(cardsRemaining, meldSets);
 
-            // If any meld sets were found, then add them to the combinations list and recurse more deeplu
+            // If any meld sets were found, then add them to the combinations list and recurse more deeply
             if (meldSets.Count > 0)
             {
                 foreach (MeldSet meldSet in meldSets)
@@ -307,7 +387,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             List<MeldRun> meldRuns = new();
             FindMeldRuns(cardsRemaining, meldRuns);
 
-            // If any meld runs were found, then add them to the combinations list and recurse more deeplu
+            // If any meld runs were found, then add them to the combinations list and recurse more deeply
             if (meldRuns.Count > 0)
             {
                 foreach (MeldRun meldRun in meldRuns)
