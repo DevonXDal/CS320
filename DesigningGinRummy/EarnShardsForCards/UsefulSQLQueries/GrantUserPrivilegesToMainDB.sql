@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON `portfolio_main`.* TO 'portfolio-admin'@'localhost'
