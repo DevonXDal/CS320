@@ -59,7 +59,14 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <param name="card">The game card to add to the hand</param>
         public void Insert(int index, T card)
         {
-            Hand.Insert(index, card);
+            if (index < 0 || index > Hand.Count)
+            {
+                throw new IndexOutOfRangeException("Cannot place card at that index");
+            }
+            else
+            {
+                Hand.Insert(index, card);
+            }
         }
 
         /// <summary>

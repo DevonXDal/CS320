@@ -34,6 +34,11 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <param name="insertFaceUp">Whether the card should be face up (true by default)</param>
         public void Add(T card, bool insertFaceUp = true)
         {
+            if (insertFaceUp)
+            {
+                card.Show();
+            }
+            
             Cards.Add(card);
         }
 
@@ -66,6 +71,21 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
             }
 
             return Cards[Cards.Count - 1].GetImageFilePath();
+        }
+
+        /// <summary>
+        /// Returns the top card without removing it from the discard pile
+        /// </summary>
+        /// <returns>The top card of the discard pile</returns>
+        /// <exception cref="InvalidOperationException">Thrown if there are no cards in the discard pile</exception>
+        public T ViewTop()
+        {
+            if (Cards.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot view the top of an empty discard pile");
+            }
+
+            return Cards[Cards.Count - 1] as T;
         }
 
         /// <summary>

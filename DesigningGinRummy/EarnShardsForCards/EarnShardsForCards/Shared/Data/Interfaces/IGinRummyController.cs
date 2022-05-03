@@ -99,10 +99,7 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// Returns data used to render graphical elements to the screen after each state update.
         /// </summary>
         /// <returns>The data the view needs to redisplay itself</returns>
-        public GinRummyViewData FetchViewData()
-        {
-            return null;
-        }
+        public GinRummyViewData? FetchViewData();
 
         /// <summary>
         /// Returns the data for the end of display to work.
