@@ -44,7 +44,7 @@ namespace EarnShardsForCards.Test.Models
         /// I.	(card.new(rank, suit, value)).Rank == rank
         /// II.	(card.new (rank, suit, value)).Suit == suit
         /// IV.card.new (rank, suit, value)
-        /// card.GetImageFilePath() == “~/ img / PlayingCard / Back.webp”
+        /// card.GetImageFilePath() == “img/PlayingCard/Back.webp”
         /// V. card.new (rank, suit, value)
         /// card.Value == value
         /// 
@@ -58,7 +58,7 @@ namespace EarnShardsForCards.Test.Models
                 card.Rank.Should().Be(rank);
                 card.Suit.Should().Be(suit);
                 card.Value.Should().Be(value);
-                card.GetImageFilePath().Should().Be("~/img/PlayingCard/Back.webp");
+                card.GetImageFilePath().Should().Be("img/PlayingCard/Back.webp");
             });    
         }
 
@@ -78,10 +78,10 @@ namespace EarnShardsForCards.Test.Models
             RunFunctionUsingEachPlayingCard((PlayingCard card, Rank rank, Suit suit, int value) =>
             {
                 // Act & Assert
-                card.GetImageFilePath().Should().Be("~/img/PlayingCard/Back.webp");
+                card.GetImageFilePath().Should().Be("img/PlayingCard/Back.webp");
 
                 card.Show();
-                card.GetImageFilePath().Should().Be($"~/img/PlayingCard/{rank}-{suit}.webp");
+                card.GetImageFilePath().Should().Be($"img/PlayingCard/{rank}-{suit}.webp");
             });
         }
 

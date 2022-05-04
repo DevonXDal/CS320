@@ -1,4 +1,5 @@
-﻿using EarnShardsForCards.Shared.Data.GenericGameObjects;
+﻿using EarnShardsForCards.Shared.Data.Enumerations;
+using EarnShardsForCards.Shared.Data.GenericGameObjects;
 using EarnShardsForCards.Shared.Data.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -30,8 +31,34 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             ComputerPlayer = new GinRummyComputerPlayer<PlayingCard>(config, controller);
             Player = new Player<PlayingCard>();
 
-            Deck = new PlayingCardDeck<PlayingCard>();
+            Deck = new PlayingCardDeck<PlayingCard>(RefreshDeck());
             DiscardPile = new DiscardPile<PlayingCard>();
+        }
+
+        /// <summary>
+        /// Loads the deck with a fresh set of cards, will be removed with a deck factory when able
+        /// </summary>
+        public static IList<PlayingCard> RefreshDeck()
+        {
+            List<PlayingCard> cards = new();
+            
+            foreach (Rank rank in Enum.GetValues(typeof(Rank))) {
+                foreach (Suit suit in Enum.GetValues(typeof(Suit))) {
+                    int value = 0;
+
+                    if ((int)rank > 10)
+                    {
+                        value = 10;
+                    }
+                    else
+                    {
+                        value = (int)rank;
+                    }
+                    cards.Add(new PlayingCard(rank, suit, value));
+                }
+            }
+
+            return cards;
         }
     }
 }

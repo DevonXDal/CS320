@@ -26,7 +26,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// Creates a new deck with the given cards. The cards will be copied from one deck to another. The actual list itself will not be copied.
         /// </summary>
         /// <param name="cards">The cards to carry over to the new deck</param>
-        public Deck(List<T> cards)
+        public Deck(IList<T> cards)
         {
             Cards = new List<T>();
             foreach (T card in cards)

@@ -73,6 +73,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             _board.Deck.Shuffle();
             DealCards();
             _board.DiscardPile.Add(_board.Deck.Draw()); // Add the first card to the discard pile     
+
+            _notifier.SendNotice();
         }
 
         /// <summary>
@@ -496,6 +498,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             CheckIfTieHasOccured(); // Next turn may have only two cards left in the deck.
         }
 
+        // Deals ten cards, one at a time, to each of the players - Uses 20 cards
         private void DealCards()
         {
             Player<PlayingCard> humanPlayer = _board.Player;

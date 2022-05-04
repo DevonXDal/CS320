@@ -27,7 +27,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         /// <param name="rank">The alphanumeric character that aids in identification</param>
         /// <param name="suit">The shape that aids in identification</param>
         /// <param name="value">The value that the card has in relation to a game</param>
-        public PlayingCard(Rank rank, Suit suit, int value) : base($"~/img/PlayingCard/{Enum.GetName(rank)}-{Enum.GetName(suit)}.webp", "~/img/PlayingCard/Back.webp")
+        public PlayingCard(Rank rank, Suit suit, int value) : base($"img/PlayingCard/{Enum.GetName(rank)}-{Enum.GetName(suit)}.webp", "img/PlayingCard/Back.webp")
         {
             Rank = rank;
             Suit = suit;

@@ -6,13 +6,14 @@
 
 @* https://blazorfiddle.com/s/8jurefka - Source of dropdown knowledge*@
 
+<div class="row">
 <ul ondragover="event.preventDefault();" class="m-2">
     @if (IsHumanPlayerHand)
     {
         for (int i = 0; i < _cardsInHand.Count; i++)
         {
-            <li draggable="true" style="list-style-type:none; height:30px" @key="i" tabindex="1" @ondrop="@(()=> Drop(_cardsInHand[i]))" @ondrag="@(()=> StartDrag(_cardsInHand[i]))">
-                <GUICardSlot Controller="Controller" CardImageFilePath="@_cardsInHand[i]" HandPostion="i" IsHumanPlayerCard="true"></GUICardSlot>
+            <li class="col-2 col-md-1" draggable="true" style="list-style-type:none; height:30px" @key="i" tabindex="1" @ondrop="@(()=> Drop(_cardsInHand[i]))" @ondrag="@(()=> StartDrag(_cardsInHand[i]))">
+                <GUICardSlot Controller="Controller" CardImageFilePath="@_cardsInHand[i]" HandPostion="@i" IsHumanPlayerCard="true"></GUICardSlot>
             </li>
         }
     } else
@@ -21,6 +22,7 @@
     }
 
 </ul>
+</div>
 
 @code {
     [CascadingParameter] public IModalService Modal { get; set; }
