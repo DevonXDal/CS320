@@ -42,7 +42,13 @@
     <div class="row">
         <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 80vh; width: 100%"> 
             <div class="row">
+                <GUIHand Controller="_controller" IsHumanPlayerHand="false" Notifier="_gameUpdateNotifier"></GUIHand>
+            </div>
+            <div class="row">
                 <GUIHand Controller="_controller" IsHumanPlayerHand="true" Notifier="_gameUpdateNotifier"></GUIHand>
+            </div>
+            <div class="row">
+                <span class="general-game-text">@_turnPhaseIndicator</span>
             </div>
         </div>
     </div>
@@ -134,6 +140,8 @@
 
     private GinRummyViewData? _viewData;
 
+    private string? _turnPhaseIndicator;
+
     /// <summary>
     /// Configure the starting state of the page with the board darkened, three dropdowns, a start game button, and information below on how to play.
     /// </summary>
@@ -143,9 +151,9 @@
         _controller = GinRummyController.GetInstance(Configuration); // May need changed later on
         _gameUpdateNotifier = _controller.FetchNotifier();
         _gameUpdateNotifier.Subscribe(this); // Subscribe to the notifier so that we can update the page when the game state changes
-        
+
         _viewData = _controller.FetchViewData();
-        
+
 
         base.OnInitializedAsync();
     }
@@ -153,6 +161,39 @@
     public override void Notify()
     {
         _viewData = _controller.FetchViewData();
+
+        if (_viewData != null)
+        {
+            UpdateTurnPhaseInformation();
+        }
+
         StateHasChanged();
+    }
+
+    private void UpdateTurnPhaseInformation()
+    {
+        string? turnString;
+
+        // Who's turn it is to play
+        if (_viewData.CurrentTurn == TurnState.Human)
+        {
+            turnString = "Your ";
+        } else
+        {
+            turnString = "Opponent's ";
+        }
+
+
+        // The Phase of the Turn
+        if (_viewData.CurrentPhase == PhaseState.Draw && _viewData.IsSpecialDraw)
+        {
+            _turnPhaseIndicator = turnString + "Special Draw Phase";
+        } else if (_viewData.CurrentPhase == PhaseState.Draw)
+        {
+            _turnPhaseIndicator = turnString + "Draw Phase";
+        } else {
+            _turnPhaseIndicator = turnString + "Discard Phase";
+        }
+        
     }
 }

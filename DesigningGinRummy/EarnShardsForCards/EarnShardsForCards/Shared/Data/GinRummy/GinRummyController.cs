@@ -78,11 +78,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         }
 
         /// <summary>
-        /// Restart the game, performs similar to initializing the game but ensures that the notifier is recreated.
+        /// Restart the game, performs similar to initializing the game. May perform other actions in the future.
         /// </summary>
         public void ReinitializeGame()
         {
-            _notifier = new Notifier();
             InitializeGame();
         }
 

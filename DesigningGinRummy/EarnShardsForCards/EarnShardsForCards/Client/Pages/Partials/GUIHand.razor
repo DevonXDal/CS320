@@ -6,19 +6,30 @@
 
 @* https://blazorfiddle.com/s/8jurefka - Source of dropdown knowledge*@
 
-<div class="row">
-<ul ondragover="event.preventDefault();" class="m-2">
+<div class="my-2">
+<ul ondragover="event.preventDefault();" class="list-inline row align-content-around" style="list-style: none">
     @if (IsHumanPlayerHand)
     {
+        <li class="col-md-1 my-1 general-game-text">Your Hand</li>
         for (int i = 0; i < _cardsInHand.Count; i++)
         {
-            <li class="col-2 col-md-1" draggable="true" style="list-style-type:none; height:30px" @key="i" tabindex="1" @ondrop="@(()=> Drop(_cardsInHand[i]))" @ondrag="@(()=> StartDrag(_cardsInHand[i]))">
-                <GUICardSlot Controller="Controller" CardImageFilePath="@_cardsInHand[i]" HandPostion="@i" IsHumanPlayerCard="true"></GUICardSlot>
+            string filePath = _cardsInHand[i];
+            <li class="list-inline-item col-md-1 col-2 my-1" draggable="true"  @key="i" tabindex="1" @ondrop="@(()=> Drop(filePath))" @ondrag="@(()=> StartDrag(filePath))">
+                <GUICardSlot Controller="Controller" CardImageFilePath="@filePath" HandPostion="@i" IsHumanPlayerCard="true"></GUICardSlot>
             </li>
         }
+        <li class="col-md-1 my-1"></li>
     } else
     {
-        
+        <li class="col-md-1 my-1" style="color: #666666">The Computer's Hand</li>
+        for (int i = 0; i < _cardsInHand.Count; i++)
+        {
+            string filePath = _cardsInHand[i];
+            <li class="list-inline-item col-md-1 col-2 my-1" draggable="false">
+                <GUICardSlot Controller="Controller" CardImageFilePath="@filePath" HandPostion="@i" IsHumanPlayerCard="false"></GUICardSlot>
+            </li>
+        }
+        <li class="col-md-1 my-1"></li>
     }
 
 </ul>
@@ -47,7 +58,8 @@
     protected override async Task OnInitializedAsync()
     {
         FetchNewData();
-
+        Notifier.Subscribe(this);
+        currentIndex = 0;
 
         await base.OnInitializedAsync();
     }
@@ -62,6 +74,7 @@
     void ClickCardInList(string cardInList)
     {
         currentIndex = GetIndex(cardInList);
+        StateHasChanged();
     }
 
     int GetIndex(string cardInList)

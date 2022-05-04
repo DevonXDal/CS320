@@ -62,34 +62,34 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-var policyCollection = new HeaderPolicyCollection()
-        .AddFrameOptionsDeny()
-        .AddXssProtectionBlock()
-        .AddContentTypeOptionsNoSniff()
-        .AddStrictTransportSecurityMaxAgeIncludeSubDomains(maxAgeInSeconds: 60 * 60 * 24 * 365) // maxage = one year in seconds
-        .AddReferrerPolicyStrictOriginWhenCrossOrigin()
-        .RemoveServerHeader()
-        .AddContentSecurityPolicy(builder =>
-        {
-            builder.AddObjectSrc().None();
-            builder.AddFormAction().Self();
-            builder.AddFrameAncestors().Self();
-        })
-        .AddCrossOriginOpenerPolicy(builder =>
-        {
-            builder.SameOrigin();
-        })
-        .AddCrossOriginEmbedderPolicy(builder =>
-        {
-            builder.RequireCorp();
-        })
-        .AddCrossOriginResourcePolicy(builder =>
-        {
-            builder.CrossOrigin();
-        })
-        .AddCustomHeader("X-My-Test-Header", "Header value");
+//var policyCollection = new HeaderPolicyCollection()
+//        .AddFrameOptionsDeny()
+//        .AddXssProtectionBlock()
+//        .AddContentTypeOptionsNoSniff()
+//        .AddStrictTransportSecurityMaxAgeIncludeSubDomains(maxAgeInSeconds: 60 * 60 * 24 * 365) // maxage = one year in seconds
+//        .AddReferrerPolicyStrictOriginWhenCrossOrigin()
+//        .RemoveServerHeader()
+//        .AddContentSecurityPolicy(builder =>
+//        {
+//            builder.AddObjectSrc().None();
+//            builder.AddFormAction().Self();
+//            builder.AddFrameAncestors().Self();
+//        })
+//        .AddCrossOriginOpenerPolicy(builder =>
+//        {
+//            builder.SameOrigin();
+//        })
+//        .AddCrossOriginEmbedderPolicy(builder =>
+//        {
+//            builder.RequireCorp();
+//        })
+//        .AddCrossOriginResourcePolicy(builder =>
+//        {
+//            builder.CrossOrigin();
+//        })
+//        .AddCustomHeader("X-My-Test-Header", "Header value");
 
-app.UseSecurityHeaders(policyCollection);
+//app.UseSecurityHeaders(policyCollection);
 
 app.UseRouting();
 

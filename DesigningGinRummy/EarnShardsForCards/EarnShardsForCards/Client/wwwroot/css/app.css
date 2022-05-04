@@ -75,7 +75,7 @@ a, .btn-link {
 }
 
 ul#horizontal-list {
-    min-width: 696px;
+    min-width: 100%;
     list-style: none;
     padding-top: 20px;
 }
@@ -83,3 +83,7 @@ ul#horizontal-list {
     ul#horizontal-list li {
         display: inline;
     }
+
+.general-game-text {
+    color: #666666;
+}
