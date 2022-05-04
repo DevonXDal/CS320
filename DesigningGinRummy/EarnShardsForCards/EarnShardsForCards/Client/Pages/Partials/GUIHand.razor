@@ -1,5 +1,105 @@
-﻿<h3>GUIHand</h3>
+﻿@using EarnShardsForCards.Shared.Data.GinRummy
+@using EarnShardsForCards.Shared.Data.GenericGameObjects
+@using EarnShardsForCards.Client.Data
+
+@inherits SubscriberComponent
+
+@* https://blazorfiddle.com/s/8jurefka - Source of dropdown knowledge*@
+
+<ul ondragover="event.preventDefault();" class="m-2">
+    @if (IsHumanPlayerHand)
+    {
+        for (int i = 0; i < _cardsInHand.Count; i++)
+        {
+            <li draggable="true" style="list-style-type:none; height:30px" @key="i" tabindex="1" @ondrop="@(()=> Drop(_cardsInHand[i]))" @ondrag="@(()=> StartDrag(_cardsInHand[i]))">
+                <GUICardSlot Controller="Controller" CardImageFilePath="@_cardsInHand[i]" HandPostion="i" IsHumanPlayerCard="true"></GUICardSlot>
+            </li>
+        }
+    } else
+    {
+        
+    }
+
+</ul>
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
 
+    [Parameter]
+    public GinRummyController Controller { get; set; }
+
+    [Parameter]
+    public Notifier Notifier { get; set; }
+
+    [Parameter]
+    public bool IsHumanPlayerHand { get; set; }
+
+    private TurnState? _turnState;
+
+    private PhaseState? _phaseState;
+
+    private IList<string>? _cardsInHand;
+
+    private int currentIndex;
+
+    protected override async Task OnInitializedAsync()
+    {
+        FetchNewData();
+
+
+        await base.OnInitializedAsync();
+    }
+
+
+
+    void StartDrag(string cardInList)
+    {
+        currentIndex = GetIndex(cardInList);
+    }
+
+    void ClickCardInList(string cardInList)
+    {
+        currentIndex = GetIndex(cardInList);
+    }
+
+    int GetIndex(string cardInList)
+    {
+        return _cardsInHand.IndexOf(cardInList);
+    }
+
+    void Drop(string cardInList)
+    {
+        if (cardInList != null)
+        {
+            var index = GetIndex(cardInList);
+
+            // move the card in the hand
+            Controller.RequestCardReposition(currentIndex, index);
+
+            // update current selection
+            currentIndex = index;
+        } 
+    }
+
+    public override void Notify()
+    {
+        FetchNewData();
+        StateHasChanged();
+    }
+
+    void FetchNewData()
+    {
+        var viewData = Controller.FetchViewData();
+
+        if (IsHumanPlayerHand)
+        {
+            _cardsInHand = viewData.HumanPlayerHandImages;
+        } else
+        {
+            _cardsInHand = viewData.ComputerPlayerHandImages;
+        }
+
+        _turnState = viewData.CurrentTurn;
+        _phaseState = viewData.CurrentPhase;
+    }
 }

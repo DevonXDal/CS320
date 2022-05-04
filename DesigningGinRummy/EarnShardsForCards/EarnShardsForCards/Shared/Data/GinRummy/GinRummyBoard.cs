@@ -1,4 +1,6 @@
 ﻿using EarnShardsForCards.Shared.Data.GenericGameObjects;
+using EarnShardsForCards.Shared.Data.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +25,13 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <summary>
         /// Create a new GinRummyBoard holding information related to the board and its players
         /// </summary>
-        public GinRummyBoard()
+        public GinRummyBoard(IConfiguration config, IGinRummyController controller)
         {
+            ComputerPlayer = new GinRummyComputerPlayer<PlayingCard>(config, controller);
+            Player = new Player<PlayingCard>();
 
+            Deck = new PlayingCardDeck<PlayingCard>();
+            DiscardPile = new DiscardPile<PlayingCard>();
         }
     }
 }

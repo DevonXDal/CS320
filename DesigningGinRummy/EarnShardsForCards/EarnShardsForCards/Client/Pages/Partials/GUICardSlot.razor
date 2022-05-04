@@ -1,5 +1,26 @@
-﻿<h3>GUICardSlot</h3>
+﻿@using EarnShardsForCards.Shared.Data.GinRummy
+
+<img src="@CardImageFilePath" class="img-fluid" />
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+    
+    [Parameter]
+    public GinRummyController Controller { get; set; }
+
+    [Parameter]
+    public bool IsHumanPlayerCard { get; set; }
+
+    // Index of the card in that player's hand
+    [Parameter] 
+    public int HandPostion { get; set; }
+    
+    [Parameter] 
+    public string CardImageFilePath { get; set; }
+
+    private TurnState? _turnState;
+    
+    private PhaseState? _phaseState;
+    
 
 }

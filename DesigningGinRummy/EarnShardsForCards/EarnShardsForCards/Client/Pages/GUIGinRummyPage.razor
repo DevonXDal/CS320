@@ -20,7 +20,32 @@
 <div class="container-md container-fluid" style="background-color: #FCFCFC">
 @if (_viewData == null)
 {
-    <GUIGameButton Controller="_controller" Type="GameButtonType.Start"></GUIGameButton>
+    <div class="text-center">
+        <GUIGameButton Controller="_controller" Type="GameButtonType.Start"></GUIGameButton>
+    </div>
+    
+    <div class="row">
+        <div class="col-12" id="unloaded-game-board" style="background-color: #103232; height: 80vh; width: 100%" title="Start the game to view the board"> 
+            <div class="align-self-center w-100 h-50 m-auto" style="transform: translateY(75%); text-align:center; display: block">
+                @*https://www.w3schools.com/howto/howto_css_center-vertical.asp*@
+                <span style="color: #CEE5F2; font-size: 2em;">Game Not Started</span>
+            </div>
+        </div>
+    </div>
+
+} else
+{
+   <div class="text-center">
+        <GUIGameButton Controller="_controller" Type="GameButtonType.Restart"></GUIGameButton>
+    </div>
+    
+    <div class="row">
+        <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 80vh; width: 100%"> 
+            <div class="row">
+                <GUIHand Controller="_controller" IsHumanPlayerHand="true" Notifier="_gameUpdateNotifier"></GUIHand>
+            </div>
+        </div>
+    </div>
 }
 
 <div class="row">
@@ -115,7 +140,7 @@
     /// <returns>Nothing</returns>
     protected override async Task OnInitializedAsync()
     {
-        _controller = GinRummyController.GetInstance(); // May need changed later on
+        _controller = GinRummyController.GetInstance(Configuration); // May need changed later on
         _gameUpdateNotifier = _controller.FetchNotifier();
         _gameUpdateNotifier.Subscribe(this); // Subscribe to the notifier so that we can update the page when the game state changes
         

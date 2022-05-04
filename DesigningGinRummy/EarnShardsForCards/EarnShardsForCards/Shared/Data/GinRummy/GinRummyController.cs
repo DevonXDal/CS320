@@ -2,6 +2,7 @@
 using EarnShardsForCards.Shared.Data.GenericGameObjects;
 using EarnShardsForCards.Shared.Data.Interfaces;
 using EarnShardsForCards.Shared.Data.Records;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         private GinRummyBoard? _board;
         private GinRummyScoreHandler? _scoreHandler;
         private GinRummyGameState? _gameState;
+        private IConfiguration _config;
         private Notifier _notifier;
         private bool _displayEndOfRound;
         bool wasThereAPreviousPassThisRound;
@@ -33,9 +35,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <summary>
         /// Create a new controller reference to use with the game.
         /// </summary>
-        private GinRummyController()
+        private GinRummyController(IConfiguration config)
         {
             _notifier = new Notifier();
+            _config = config;
             wasThereAPreviousPassThisRound = false;
 
             // The data below should not be read until after being reassinged.
@@ -47,11 +50,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// Gets the singleton instance of the controller and sets one up if one does not already exist.
         /// </summary>
         /// <returns>The singleton of the controller</returns>
-        public static GinRummyController GetInstance()
+        public static GinRummyController GetInstance(IConfiguration config)
         {
             if (_controller == null)
             {
-                _controller = new GinRummyController();
+                _controller = new GinRummyController(config);
             }
 
             return _controller;
@@ -63,9 +66,13 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         public void InitializeGame()
         {
             wasThereAPreviousPassThisRound = false;
-            _board = new GinRummyBoard();
+            _board = new GinRummyBoard(_config, this);
             _scoreHandler = new GinRummyScoreHandler(this, _board.Player, _board.ComputerPlayer);
             _board.ComputerPlayer.SkillLevel = SkillLevel.Intermediate; // NEEDS CHANGED BEFORE SHOWCASE
+            _gameState = new(false, 100, TurnState.Human); // NEEDS CHANGED BEFORE SHOWCASE
+            _board.Deck.Shuffle();
+            DealCards();
+            _board.DiscardPile.Add(_board.Deck.Draw()); // Add the first card to the discard pile     
         }
 
         /// <summary>
@@ -75,9 +82,6 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             _notifier = new Notifier();
             InitializeGame();
-            _gameState = new(false, 100, TurnState.Human); // NEEDS CHANGED BEFORE SHOWCASE
-            _board.Deck.Shuffle();
-            _board.DiscardPile.Add(_board.Deck.Draw()); // Add the first card to the discard pile
         }
 
         /// <summary>
@@ -490,6 +494,22 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             _notifier.SendNotice(); // Update the view
 
             CheckIfTieHasOccured(); // Next turn may have only two cards left in the deck.
+        }
+
+        private void DealCards()
+        {
+            Player<PlayingCard> humanPlayer = _board.Player;
+            GinRummyComputerPlayer<PlayingCard> computerPlayer = _board.ComputerPlayer;
+
+            // Deal the cards to the players
+            for (int i = 1; i <= 10; i++)
+            {
+                PlayingCard cardForHumanPlayer = _board.Deck.Draw();
+                cardForHumanPlayer.Show();
+                humanPlayer.Hand.Add(cardForHumanPlayer);
+                
+                computerPlayer.Hand.Add(_board.Deck.Draw());
+            }
         }
     }
 }

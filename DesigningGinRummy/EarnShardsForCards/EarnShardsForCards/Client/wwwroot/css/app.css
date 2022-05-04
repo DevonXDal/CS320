@@ -62,3 +62,24 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+/* From: https://css-tricks.com/centering-list-items-horizontally-slightly-trickier-than-you-might-think/ - Centering cards in the hand*/
+#menu-outer {
+    height: 84px;
+    background: url(images/bar-bg.jpg) repeat-x;
+}
+
+.table {
+    display: table; /* Allow the centering to work */
+    margin: 0 auto;
+}
+
+ul#horizontal-list {
+    min-width: 696px;
+    list-style: none;
+    padding-top: 20px;
+}
+
+    ul#horizontal-list li {
+        display: inline;
+    }
