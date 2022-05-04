@@ -1,9 +1,11 @@
 ﻿@page "/"
 @page "/GinRummy"
 @using EarnShardsForCards.Client.Data
+@using EarnShardsForCards.Client.Pages.Partials.GinRummy
+@using EarnShardsForCards.Client.Pages.Partials
 @using EarnShardsForCards.Shared.Data.GenericGameObjects
 @using EarnShardsForCards.Shared.Data.GinRummy
-@using EarnShardsForCards.Shared.Data.Interfaces
+
 
 @inherits SubscriberComponent
 @inject IConfiguration Configuration
@@ -14,10 +16,98 @@
 
 <PageTitle>Play Gin Rummy Online</PageTitle>
 
+
+<div class="container-md container-fluid" style="background-color: #FCFCFC">
+@if (_viewData == null)
+{
+    <GUIGameButton Controller="_controller" Type="GameButtonType.Start"></GUIGameButton>
+}
+
+<div class="row">
+<div class="col-12">
+    <div id="interaction-guide" class="my-2">
+        <h2 style="color: #1D0FBB">How to Interact with this Game</h2>
+
+        Cards can be drag-and-dropped to reposition them in your hand. 
+        They can also be drag-and-dropped into the the discard pile or knock pile. 
+        Double tap the deck or discard pile during the draw phase in order to draw from that pile.
+    </div>
+
+    <div id="rules" class="my-2">
+        <h2 style="color: #1D0FBB">Rules</h2>
+    
+        <p>
+        Gin Rummy starts by dealing ten playing cards from a shuffled 52 card deck to each player. 
+        The remaining 32 cards are placed as the draw pile. 
+        Then, the top card is drawn from the deck and placed face up in the discard pile.
+        </p>
+
+        <p>
+        Aces low and Kings are high for this game (unless the ‘Around the World’ variation is played). 
+        Each card is assigned a point value with face cards being worth ten points, number cards being worth their face value, and aces being worth one point.
+        </p>
+    
+        <p>
+        The goal is not to have many points in your hand, but as few as possible. 
+        In Gin Rummy, your points serve to benefit the opponent. 
+        But Gin Rummy is won by amassing a set number of points over multiple rounds. 
+        You may be thinking something along the lines of, “What? But you just said that the goal is to have as few points as possible in your hand?” 
+        That’s right, but points are earned at the end of a round in a specific way. 
+        In addition to possible bonus points, the main accumulation of points in a round comes from the difference in the points from the 'deadwood' that 
+        you have to the amount of ‘deadwood’ that your opponent has. But before going into what deadwood is, you should first know what a ‘meld’ is.
+        </p>
+    
+        <p>
+        A meld is either a set or a run. 
+        Sets are like having a three of a kind or four of a kind in games like Poker. 
+        Having three or four 10s in your hand would be an example of a set. 
+        If you have played normal Rummy before, you may have heard sets referred to as rises, it is the same thing. 
+        Unlike normal Rummy, these melds are not played to the table during your turn but held in the hand until the time comes to score the round. 
+        Runs are like straights in games like Poker or Yahtzee with something like 4, 5, 6, 7, 8 being a straight. 
+        You must have at least three cards forming the run but there is no upper limit to the number of cards forming the run. 
+        When forming a run, the cards must also be of the same suit (Hearts, Diamonds, Clubs, Spades). 
+        While a card is a part of a meld, you do not suffer the harmful effects from it at the end of the round like you would with a deadwood. 
+        A card can not form multiple melds at the same time. When the round ends, the game will determine where cards should be placed in order to eliminate the most deadwood. 
+        So, to define deadwood, it is the cards (and their point values) that are not a part of meld. 
+        Your goal is to form these melds so that the opponent cannot use it as deadwood against you. 
+        Point values from cards that are a part of a meld do not matter. There is no benefit for having melds with cards that total many points or very few.
+        </p>
+    
+        <p>
+        Who plays first differs based on houserules but for this site, the person who did not get any points the previous round goes first. 
+        The player goes first for new games.
+        </p>
+    
+        <p>
+        Each turn in a round has two phases, the draw phase and the discard phase. 
+        During the draw phase, the person to play chooses to draw a card from either the draw pile or the discard pile. 
+        Unless ‘Big Gin’ is achieved, the person to play chooses a card to either discard or ‘knock’ with. 
+        If the person to play discards a card, then the person to play switches to the other player. 
+        Special rules exist with the first turn each player takes in a round. 
+        The person who is first to play for that round can either draw the card in the discard pile or pass their turn. 
+        If they draw the discard card, then they play the rest of their round normally and their opponent can draw from either pile on their first turn. 
+        If the first person to play chooses to pass their first turn, then the opponent has the same choices available for their first turn. 
+        Regardless of what is chosen by the opponent, every turn after each player’s first is played normally.
+        </p>
+    
+        <p>
+        A person can only knock with a card if they would have ten or less deadwood remaining after discarding that card.
+        </p>
+    </div>
+</div>
+</div>
+</div>
+
+
+
 @code {
-    private IGinRummyController? _controller;
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+    private GinRummyController? _controller;
 
     private Notifier? _gameUpdateNotifier;
+
+    private GinRummyViewData? _viewData;
 
     /// <summary>
     /// Configure the starting state of the page with the board darkened, three dropdowns, a start game button, and information below on how to play.
@@ -28,12 +118,16 @@
         _controller = GinRummyController.GetInstance(); // May need changed later on
         _gameUpdateNotifier = _controller.FetchNotifier();
         _gameUpdateNotifier.Subscribe(this); // Subscribe to the notifier so that we can update the page when the game state changes
+        
+        _viewData = _controller.FetchViewData();
+        
 
         base.OnInitializedAsync();
     }
 
     public override void Notify()
     {
-        
+        _viewData = _controller.FetchViewData();
+        StateHasChanged();
     }
 }

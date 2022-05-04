@@ -1,5 +1,26 @@
-﻿<h3>GUIGameButton</h3>
+﻿@using EarnShardsForCards.Shared.Data.GinRummy
+@using EarnShardsForCards.Client.Pages.Partials
+
+<button type="button" class="btn btn-primary" title="" @onclick="OnClick">@Enum.GetName(Type)</button>
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
 
+    [Parameter]
+    public GameButtonType Type { get; set; }
+
+    [Parameter]
+    public GinRummyController Controller { get; set; }
+
+    public void OnClick()
+    {
+        if (Type == GameButtonType.Start)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(InformativeModalData.TextBody), "Testing? 1..2..3? Anyone there!?");
+
+            Modal.Show<InformativeModalData>("Passing Data", parameters);
+        }
+
+    }
 }
