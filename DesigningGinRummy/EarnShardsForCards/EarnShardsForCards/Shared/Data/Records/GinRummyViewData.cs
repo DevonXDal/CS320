@@ -22,19 +22,22 @@ namespace EarnShardsForCards.Shared.Data.Records
         public int ComputerPlayerHandSize { get; init; }
         public string DiscardPileImageFilePath { get; init; }
         public int RemainingCardsInDeck { get; init; }
-        
+
+        public bool IsRoundOver { get; init; }
+
         /// <summary>
         /// Set up the view data with information to display to the screen.
         /// </summary>
         /// <param name="currentTurn">Whose turn it is to play</param>
         /// <param name="currentPhase">What phase of the current turn is it</param>
-        /// <param name="isSpecialDraw">Is drawing from the deck allowed or only passing</param>
+        /// <param name="isSpecialDraw">Is drawing from the deck allowed or only passing?</param>
         /// <param name="humanPlayerHandImages">Images in order for the cards in the user's hand</param>
         /// <param name="computerPlayerHandImages">Images in order for the cards in the computer's hand</param>
         /// <param name="humanPlayerHandSize">Number of cards in the user's hand</param>
         /// <param name="computerPlayerHandSize">Number of cards in the computer's hand</param>
         /// <param name="discardPileImageFilePath">Image representation for the discard pile</param>
         /// <param name="remainingCardsInDeck">Number of cards in the deck currently</param>
+        /// <param name="isRoundOver">Is the round over?</param>
         public GinRummyViewData(
             TurnState currentTurn, 
             PhaseState currentPhase, bool isSpecialDraw, 
@@ -43,7 +46,8 @@ namespace EarnShardsForCards.Shared.Data.Records
             int humanPlayerHandSize, 
             int computerPlayerHandSize, 
             string discardPileImageFilePath, 
-            int remainingCardsInDeck)
+            int remainingCardsInDeck,
+            bool isRoundOver)
         {
             CurrentTurn = currentTurn;
             CurrentPhase = currentPhase;
@@ -54,6 +58,7 @@ namespace EarnShardsForCards.Shared.Data.Records
             ComputerPlayerHandSize = computerPlayerHandSize;
             DiscardPileImageFilePath = discardPileImageFilePath;
             RemainingCardsInDeck = remainingCardsInDeck;
+            IsRoundOver = isRoundOver;
         }
 
     }

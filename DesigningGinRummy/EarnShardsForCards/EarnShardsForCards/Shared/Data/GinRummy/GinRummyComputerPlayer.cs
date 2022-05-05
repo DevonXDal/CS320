@@ -69,7 +69,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             {
                 if (!IsCardRunForming(card, isAroundTheWorld) && !IsCardSetForming(card))
                 {
-                    percentageOfDrawingThisCard += ExtractValueFromConfiguration(specificDrawSection, "NotLargestDeadwoodCard", 70);
+                    percentageOfDrawingThisCard += ExtractValueFromConfiguration(specificDrawSection, "NotLargestDeadwoodCard", 20);
                     break;
                 }
             }

@@ -28,7 +28,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         private GinRummyGameState? _gameState;
         private IConfiguration _config;
         private Notifier _notifier;
-        private bool _displayEndOfRound;
+        private bool _needDisplayEndOfRound;
         bool wasThereAPreviousPassThisRound;
         private int _laidOffDeadwoodPreviously;
         private GinRummyRoundEndingCase _previousRoundEndingCase;
@@ -302,7 +302,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// </summary>
         public void NotifyThatEndOfRoundIsDisplayed()
         {
-            // Needs removed when time allows
+            _needDisplayEndOfRound = false;
         }
 
         /// <summary>
@@ -310,12 +310,12 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// </summary>
         public void EndOfRoundDisplayIsFinished()
         {
-            _displayEndOfRound = false;
-
-            if (_displayEndOfRound)
+            if (_needDisplayEndOfRound)
             {
                 return; // Display never mentioned that it was displaying
             }
+
+            _notifier.SendNotice();
 
             if (_gameState.CheckIfGameIsWon() != 0) // Game is won
             {
@@ -370,7 +370,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 _board.Player.Hand.Count,
                 _board.ComputerPlayer.Hand.Count,
                 _board.DiscardPile.GetImageFilePath(),
-                _board.Deck.Count());
+                _board.Deck.Count(),
+                _needDisplayEndOfRound);
         }
 
         /// <summary>
@@ -400,14 +401,6 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 _scoreHandler.RewardPoints(true, _board.ComputerPlayer);
             }
         }
-
-        ///// <summary>
-        ///// Checks to see if some player has won the game.
-        ///// </summary>
-        //public void CheckIfWinConditionIsMet()
-        //{
-
-        //}
 
         /// <summary>
         /// Sets up the next round with the player who did not earn points last round going first.
@@ -441,6 +434,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             _gameState.CurrentTurnPhase = PhaseState.Draw;
             _gameState.IsSpecialDraw = true;
             _gameState.RoundNumber++;
+            _notifier.SendNotice();
         }
 
         /// <summary>
@@ -540,6 +534,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 possibleCardToKnock.Hide(); // Ensure the card is hidden so it is face down on the discard pile.
                 _board.DiscardPile.Add(possibleCardToKnock); // Add the card to the discard pile
                 _notifier.SendNotice();
+
+                _scoreHandler.RewardPoints(false, computerPlayer);
                 return; // Round ended by knocking
             }
             else
