@@ -17,7 +17,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
     {
         public IList<Card> Cards { get; protected set; }
 
-        public static string EmptyImageRepresentation { get; protected set; }
+        public string EmptyImageRepresentation { get; protected set; }
 
         /// <summary>
         /// Create a discard pile with no cards
@@ -25,6 +25,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
         public DiscardPile()
         {
             Cards = new List<Card>();
+            EmptyImageRepresentation = "img/No-Card.webp";
         }
 
         /// <summary>

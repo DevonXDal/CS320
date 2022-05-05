@@ -87,3 +87,11 @@ ul#horizontal-list {
 .general-game-text {
     color: #666666;
 }
+
+/* https://www.w3schools.com/howto/howto_css_image_text.asp */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

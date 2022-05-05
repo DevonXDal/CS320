@@ -40,9 +40,32 @@
     </div>
     
     <div class="row">
-        <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 80vh; width: 100%"> 
+        <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 95vh; width: 100%"> 
             <div class="row">
                 <GUIHand Controller="_controller" IsHumanPlayerHand="false" Notifier="_gameUpdateNotifier"></GUIHand>
+            </div>
+            @if (_viewData.IsSpecialDraw)
+            {
+            <div class="row">
+                <GUIGameButton Controller="_controller" Type="GameButtonType.Pass"></GUIGameButton>
+            </div>   
+            }
+            <div class="row">
+                <ul class="list-inline row align-content-around" style="list-style: none">
+
+                    <li class="list-inline-item col-md-5 col-4 my-1">Your Hand</li>
+
+                    <li class="list-inline-item col-md-1 col-2 my-1">
+                        <GUIPlayingCardDeck Controller="_controller" Notifier="_gameUpdateNotifier"></GUIPlayingCardDeck>
+                    </li> 
+                    
+                    <li class="list-inline-item col-md-1 col-2 my-1">
+                        <GUIPlayingCardDiscardPile Controller="_controller" Notifier="_gameUpdateNotifier"></GUIPlayingCardDiscardPile>
+                    </li>
+
+                    <li class="list-inline-item col-md-5 col-4 my-1">Your Hand</li>                    
+                      
+                </ul>
             </div>
             <div class="row">
                 <GUIHand Controller="_controller" IsHumanPlayerHand="true" Notifier="_gameUpdateNotifier"></GUIHand>
@@ -122,7 +145,49 @@
         </p>
     
         <p>
-        A person can only knock with a card if they would have ten or less deadwood remaining after discarding that card.
+        A person can only knock with a card if they would have ten or less deadwood remaining after discarding that card. 
+        When a player knocks, the round ends and scoring begins. 
+        If the amount of deadwood remaining after discarding the card is equal to zero, then the player has gotten ‘Gin.’ 
+        If a player does not have Big Gin or Gin, then two extra rules apply for scoring. 
+        The first that the knocker’s opponent is allowed to play cards on the knocker’s melds in order to reduce their deadwood total. 
+        This is referred to as ‘laying off’ After laying off happens, the difference in points is calculated. 
+        The second extra rule is that if it turns out that the opponent has equal or lesser amounts of deadwood than the knocker, then the opponent 
+        ‘undercuts’ the knocker and receives points instead of the person who knocked. 
+        If a person were to have 11 cards in their hand (after draw phase) and every card is a part of a meld, then the round ends immediately and the person has Big Gin(ned). 
+        Additionally, if only two cards remain in the deck at the start of a player’s turn, then the round ends and no points are awarded to either player.
+        </p>
+    </div>
+
+    <div id="scoring" class="my-2">
+        <h2>Scoring</h2> 
+
+        <p>
+        Knocking (without Gin and the opponent does not undercut the knocker):
+        Points Awarded (to Knocker) = Opponent’s Deadwood - Knocker’s Deadwood
+        </p>
+
+        <p>
+        Gin:
+        Points Awarded (to Knocker) = 25 + Opponent’s Deadwood
+        </p>
+
+        <p>
+        Big Gin:
+        Points Awarded (to Big Ginner) = 31 + Opponent’s Deadwood
+        </p>
+
+        <p>
+        Undercut:
+        Points Awarded (to Opponent) = 25 + (Knocker’s Deadwood - Opponent’s Deadwood)
+        </p>
+
+        <p>
+        If the winning total amount of points over the rounds of the game has been reached and the winner has won every round, then the winner receives a shutout bonus.
+        </p>
+
+        <p>
+        Shutout Bonus:
+        Winner’s Total Points = Winner’s Previous Total Points * 2
         </p>
     </div>
 </div>

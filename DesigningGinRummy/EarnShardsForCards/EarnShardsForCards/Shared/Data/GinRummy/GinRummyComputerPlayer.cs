@@ -67,9 +67,9 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
 
             foreach (T card in Hand.Where(c => c.Value > topCardOfDiscardPile.Value)) // Check every card that has a value that is greater than the card on the discard pile.
             {
-                if (IsCardRunForming(card, isAroundTheWorld) || IsCardSetForming(card))
+                if (!IsCardRunForming(card, isAroundTheWorld) && !IsCardSetForming(card))
                 {
-                    percentageOfDrawingThisCard += ExtractValueFromConfiguration(specificDrawSection, "NotLargestDeadwoodCard", 10);
+                    percentageOfDrawingThisCard += ExtractValueFromConfiguration(specificDrawSection, "NotLargestDeadwoodCard", 70);
                     break;
                 }
             }
@@ -119,12 +119,13 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     currentCardValue += ExtractValueFromConfiguration(specificDiscardSection, "LeadsTowardSet", 25);
                 }
 
+                bool shouldCheckCard = true; // This is used because break; is actually breaking something, somewhere.
                 foreach (T card in Hand.Where(c => c.Value > currentCard.Value)) // Check every card that has a value that is greater than the card on the discard pile.
                 {
-                    if (!(IsCardRunForming(card, isAroundTheWorld) || IsCardSetForming(card)))
+                    if (shouldCheckCard && !(IsCardRunForming(card, isAroundTheWorld) && !IsCardSetForming(card)))
                     {
                         currentCardValue += ExtractValueFromConfiguration(specificDiscardSection, "NotLargestDeadwoodCard", 15);
-                        break;
+                        shouldCheckCard = false;
                     }
                 }
 
@@ -157,17 +158,24 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
 
             var highestValueCardsFirst = Hand.OrderByDescending(c => c.Value);
             T cardToKnockWith = highestValueCardsFirst.First(); // If a better unmelded card is found then this will be replaced.
+            bool shouldCheckCard = true; // This is used because break; is actually breaking something, somewhere.
 
             foreach (T card in highestValueCardsFirst) // Check for the first unmelded card with the largest value of deadwood. May be the one first selected.
             {
-                if (!(IsCardRunForming(card, isAroundTheWorld) || IsCardSetForming(card)))
+                if (shouldCheckCard && !(IsCardRunForming(card, isAroundTheWorld) || IsCardSetForming(card)))
                 {
                     cardToKnockWith = card;
-                    break;
+                    shouldCheckCard = false;
                 }
             }
 
-            int remainingDeadwood = _controller.CheckComputerPlayerDeadwood((IList<PlayingCard>)Hand.Where(c => c.Equals(cardToKnockWith)));
+            List<PlayingCard> cardsToCheckRemainingDeadwoodWith = new();
+            foreach (PlayingCard card in Hand.Where(c => !c.Equals(cardToKnockWith)).ToList()) // Done to handle casting issues around generics
+            {
+                cardsToCheckRemainingDeadwoodWith.Add(card);
+            }
+                
+            int remainingDeadwood = _controller.CheckComputerPlayerDeadwood(cardsToCheckRemainingDeadwoodWith);
             int chanceToKnock = 0; // Percentage chance to knock
 
             if (remainingDeadwood > 10) // Too much deadwood still to knock

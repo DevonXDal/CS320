@@ -150,9 +150,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 meldCombination.Add(run);
                 meldCombinations.Add(meldCombination);
             }
-
-            meldCombinations.Add((List<IMeld>)setsRemovingDeadwood);
-            meldCombinations.Add((List<IMeld>)runsRemovingDeadwood);
+            
+            
+            //meldCombinations.Add(setsRemovingDeadwood);
+            //meldCombinations.Add(runsRemovingDeadwood);
 
             foreach (List<IMeld> meldCombination in meldCombinations) // For each meld combination
             {
@@ -160,8 +161,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 RecursivelyIdentifyMeldCombinations(deadwood, meldCombinations, meldCombination); // Recursively identify all possible meld combinations
             }
 
-            int bestMeldForTheJobIndex = 0; // Which meld combination will remove the most deadwood
-            int remainingDeadwoodAmount = 0; // The amount of deadwood that will be eliminated
+            int bestMeldForTheJobIndex = -1; // Which meld combination will remove the most deadwood
+            int remainingDeadwoodAmount = -1; // The amount of deadwood that will be eliminated
 
             for (int i = 0; i < meldCombinations.Count; i++) // For each meld combination
             {
@@ -176,16 +177,25 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             List<MeldRun> runsUsed = new();
             List<MeldSet> setsUsed = new();
 
-            foreach (IMeld meld in meldCombinations[bestMeldForTheJobIndex]) // For each meld in the best meld combination
+            if (bestMeldForTheJobIndex != -1) // If there was a best meld combination
             {
-                if (meld is MeldRun) // If the meld is a run
+                foreach (IMeld meld in meldCombinations[bestMeldForTheJobIndex]) // For each meld in the best meld combination
                 {
-                    runsUsed.Add((MeldRun)meld); // Add the run to the list of runs used
+                    if (meld is MeldRun) // If the meld is a run
+                    {
+                        runsUsed.Add(meld as MeldRun); // Add the run to the list of runs used
+                    }
+                    else // If the meld is a set
+                    {
+                        setsUsed.Add(meld as MeldSet); // Add the set to the list of sets used
+                    }
                 }
-                else // If the meld is a set
-                {
-                    setsUsed.Add((MeldSet)meld); // Add the set to the list of sets used
-                }
+            } else
+            {
+                // No meld combination was found
+                // This means that the player has every card as deadwood
+                // So we will just grab remaining deadwood ourselves
+                remainingDeadwoodAmount = hand.Sum(c => c.Value);
             }
 
             return new EliminateDeadwoodData(remainingDeadwoodAmount, setsUsed, runsUsed); // Return the data around deadwood elimination
@@ -279,12 +289,12 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             // Cards for the hand sorted by suit and then rank
             List<PlayingCard> sortedHandForRunDiscoveries = handCards.OrderBy(c => c.Suit).ToList();
-            sortedHandForRunDiscoveries = (List<PlayingCard>)(new List<PlayingCard>())
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Clubs))
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Diamonds))
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Hearts))
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Spades)
-                .ToList());
+            sortedHandForRunDiscoveries = (new List<PlayingCard>())
+                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Clubs).ToList())
+                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Diamonds).ToList())
+                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Hearts).ToList())
+                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Spades).ToList())
+                .ToList();
 
             // The previous card's suit
             Suit? previousSuit = null;

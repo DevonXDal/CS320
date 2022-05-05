@@ -72,7 +72,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             _gameState = new(false, 100, TurnState.Human); // NEEDS CHANGED BEFORE SHOWCASE
             _board.Deck.Shuffle();
             DealCards();
-            _board.DiscardPile.Add(_board.Deck.Draw()); // Add the first card to the discard pile     
+
+            PlayingCard initialDiscardPileCard = _board.Deck.Draw();
+            initialDiscardPileCard.Show();
+            _board.DiscardPile.Add(initialDiscardPileCard); // Add the first card to the discard pile     
 
             _notifier.SendNotice();
         }
@@ -154,15 +157,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             if (_gameState.CurrentPlayersTurn != TurnState.Human)
             {
-                throw new InvalidOperationException("You cannot draw cards from the deck during the opponent's turn");
-            }
-            else if (_gameState.IsSpecialDraw)
-            {
-                throw new InvalidOperationException("You can only draw from the deck during your normal draw phase");
+                throw new InvalidOperationException("You cannot draw cards from the discard pile during the opponent's turn");
             }
             else if (_gameState.CurrentTurnPhase == PhaseState.Discard)
             {
-                throw new InvalidOperationException("You cannot draw from the deck right now, you must choose a card to discard or knock");
+                throw new InvalidOperationException("You cannot draw from the discard pile right now, you must choose a card to discard or knock");
             }
             else
             {
@@ -199,6 +198,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
 
                 _gameState.CurrentTurnPhase = PhaseState.Discard;
                 _gameState.IsSpecialDraw = false;
+                
                 _notifier.SendNotice(); // Update the view
             }
         }
@@ -455,6 +455,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                         // Mark the pass as having occured
                         wasThereAPreviousPassThisRound = true;
                     }
+
+                    _gameState.CurrentPlayersTurn = TurnState.Human;
+                    _gameState.CurrentTurnPhase = PhaseState.Draw;
+                    _notifier.SendNotice(); // Update the view
+                    return; // The computer chose to pass
                 }
                 else
                 {
@@ -481,6 +486,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 possibleCardToKnock.Hide(); // Ensure the card is hidden so it is face down on the discard pile.
                 _board.DiscardPile.Add(possibleCardToKnock); // Add the card to the discard pile
                 _notifier.SendNotice();
+                return; // Round ended by knocking
             }
             else
             {

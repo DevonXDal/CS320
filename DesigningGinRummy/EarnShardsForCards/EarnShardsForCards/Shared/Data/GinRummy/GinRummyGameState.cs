@@ -39,6 +39,13 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             PointsRequiredForWin = winCondition;
             IsAroundTheWorld = isAroundTheWorld;
             CurrentPlayersTurn = firstToPlay;
+
+            PointsForHumanPlayerPerRound = new List<int>();
+            PointsForComputerPlayerPerRound = new List<int>();
+
+            RoundNumber = 0;
+            CurrentTurnPhase = PhaseState.Draw;
+            IsSpecialDraw = true;
         }
 
         /// <summary>
