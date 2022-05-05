@@ -44,9 +44,9 @@
             <div class="row">
                 <GUIHand Controller="_controller" IsHumanPlayerHand="false" Notifier="_gameUpdateNotifier"></GUIHand>
             </div>
-            @if (_viewData.IsSpecialDraw)
+            @if (_viewData.IsSpecialDraw && _viewData.CurrentTurn == TurnState.Human)
             {
-            <div class="row">
+            <div class="text-center">
                 <GUIGameButton Controller="_controller" Type="GameButtonType.Pass"></GUIGameButton>
             </div>   
             }

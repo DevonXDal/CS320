@@ -120,7 +120,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 }
 
                 bool shouldCheckCard = true; // This is used because break; is actually breaking something, somewhere.
-                foreach (T card in Hand.Where(c => c.Value > currentCard.Value)) // Check every card that has a value that is greater than the card on the discard pile.
+                foreach (T card in Hand.Where(c => c.Value > currentCard.Value).ToList()) // Check every card that has a value that is greater than the card on the discard pile.
                 {
                     if (shouldCheckCard && !(IsCardRunForming(card, isAroundTheWorld) && !IsCardSetForming(card)))
                     {

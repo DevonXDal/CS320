@@ -248,7 +248,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         public int CheckComputerPlayerDeadwood(IList<PlayingCard> handToCalculateWith)
         {
             var computerPlayer = _board.ComputerPlayer;
-            var currentComputerPlayerHand = computerPlayer.Hand;
+
+            var currentComputerPlayerHand = computerPlayer.Hand.ToList();
 
             computerPlayer.Hand.Clear(); // Swap out the hand for the hand to calculate with
             foreach (var card in handToCalculateWith)
