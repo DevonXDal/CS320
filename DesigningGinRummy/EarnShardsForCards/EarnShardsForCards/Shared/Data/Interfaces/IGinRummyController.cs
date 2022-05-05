@@ -32,7 +32,7 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// Must be the player's special draw phase.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown with a message why the action was not done when an illegal action occured</exception>
-        public void RequestPassTurn();
+        public Task RequestPassTurnAsync();
 
         /// <summary>
         /// Try to perform a draw from deck action after validation for the human player.
@@ -53,7 +53,7 @@ namespace EarnShardsForCards.Shared.Data.Interfaces
         /// Must be the player's discard phase.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown with a message why the action was not done when an illegal action occured</exception>
-        public void RequestDiscardWithCardAt(int index);
+        public Task RequestDiscardWithCardAtAsync(int index);
 
         /// <summary>
         /// Try to perform a knock action after validation for the human player.

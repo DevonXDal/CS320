@@ -44,15 +44,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             
             foreach (Rank rank in Enum.GetValues(typeof(Rank))) {
                 foreach (Suit suit in Enum.GetValues(typeof(Suit))) {
-                    int value = 0;
+                    int value = (int)rank + 1;
 
-                    if ((int)rank > 10)
+                    if (value >= 10)
                     {
                         value = 10;
-                    }
-                    else
-                    {
-                        value = (int)rank;
                     }
                     cards.Add(new PlayingCard(rank, suit, value));
                 }

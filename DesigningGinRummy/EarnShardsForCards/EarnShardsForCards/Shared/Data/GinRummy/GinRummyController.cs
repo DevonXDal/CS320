@@ -95,7 +95,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// Must be the player's special draw phase.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown with a message why the action was not done when an illegal action occured</exception>
-        public void RequestPassTurn()
+        public async Task RequestPassTurnAsync()
         {
             if (_gameState.CurrentPlayersTurn != TurnState.Human)
             {
@@ -120,7 +120,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 
                 _gameState.CurrentPlayersTurn = TurnState.Computer;
                 _notifier.SendNotice(); // Update the view
-                HandleComputersTurnAsync();
+                await HandleComputersTurnAsync();
             }
         }
 
@@ -188,7 +188,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// Must be the player's discard phase.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown with a message why the action was not done when an illegal action occured</exception>
-        public void RequestDiscardWithCardAt(int index)
+        public async Task RequestDiscardWithCardAtAsync(int index)
         {
             if (_gameState.CurrentPlayersTurn != TurnState.Human)
             {
@@ -207,7 +207,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 
                 
                 _notifier.SendNotice(); // Update the view
-                HandleComputersTurnAsync();
+                await HandleComputersTurnAsync();
             }
         }
 
@@ -349,6 +349,9 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 _gameState.PointsForHumanPlayerPerRound.Add(0); // Reward the human player nothing for their loss
                 _gameState.PointsForComputerPlayerPerRound.Add(points); // Reward the computer player for their win
             }
+
+            _needDisplayEndOfRound = true;
+            _notifier.SendNotice();
         }
 
         /// <summary>
@@ -419,6 +422,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             _board.Player.Clear();
             _board.ComputerPlayer.Clear();
 
+            DealCards();
+
             if (_gameState.PointsForHumanPlayerPerRound[_gameState.RoundNumber] > 0)
             {
                 _gameState.CurrentPlayersTurn = TurnState.Computer;
@@ -461,16 +466,21 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     ReinitializeGame();
                     break;
                 case GameButtonType.Pass:
-                    RequestPassTurn();
+                    RequestPassTurnAsync();
                     break;
             }
         }
 
         // Returns true if the next player would start their turn with only two cards left in the deck.
-        private bool CheckIfTieHasOccured()
+        private void CheckIfTieHasOccured()
         {
             // If the deck has only two cards left, then the round is over.
-            return _board.Deck.Count() == 2;
+            if (_board.Deck.Count() == 2)
+            {
+                _gameState.PointsForHumanPlayerPerRound.Add(0);
+                _gameState.PointsForComputerPlayerPerRound.Add(0);
+                _needDisplayEndOfRound = true;
+            }
         }
 
         // Handles the actions taken during the computer player's turn.

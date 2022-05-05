@@ -33,7 +33,7 @@
         </div>
     </div>
 
-} else
+} else if (!_viewData.IsRoundOver) 
 {
    <div class="text-center">
         <GUIGameButton Controller="_controller" Type="GameButtonType.Restart"></GUIGameButton>
@@ -87,8 +87,15 @@
                 <span class="general-game-text">@_turnPhaseIndicator</span>
             </div>
         </div>
+        </div>
+    } else
+    {
+    <div class="row">
+    <div class="col-12" id="game-board-scores" style="background-color: #103232; height: 120vh; width: 100%">
+        <GUIGinEndOfRoundDisplay Controller="_controller"></GUIGinEndOfRoundDisplay>
     </div>
-}
+    </div>
+    }
 
 <div class="row">
 <div class="col-12">

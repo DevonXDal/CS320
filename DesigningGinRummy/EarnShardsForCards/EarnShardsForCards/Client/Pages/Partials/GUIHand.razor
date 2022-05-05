@@ -90,7 +90,17 @@
             var index = GetIndex(cardInList);
 
             // move the card in the hand
-            Controller.RequestCardReposition(currentIndex, index);
+            try
+            {
+                Controller.RequestCardReposition(currentIndex, index);
+            } catch (InvalidOperationException e)
+            {
+                ModalParameters parameters = new ModalParameters();
+                parameters.Add(nameof(InformativeModalData.TextBody), e.Message);
+
+                Modal.Show<InformativeModalData>("Could not Reposition the Cards in Your Hand", parameters);
+            }
+            
 
             // update current selection
             currentIndex = index;

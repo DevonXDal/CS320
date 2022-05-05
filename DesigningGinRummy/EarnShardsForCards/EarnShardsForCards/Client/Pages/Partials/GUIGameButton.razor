@@ -30,22 +30,32 @@
         await base.OnInitializedAsync();
     }
 
-    public void OnClick()
+    public async Task OnClick()
     {
-        if (Type == GameButtonType.Start)
+        try
         {
-            Controller.InitializeGame();
-            //ModalParameters parameters = new ModalParameters();
-            //parameters.Add(nameof(InformativeModalData.TextBody), "Testing? 1..2..3? Anyone there!?");
+            if (Type == GameButtonType.Start)
+            {
+                Controller.InitializeGame();
+                //ModalParameters parameters = new ModalParameters();
+                //parameters.Add(nameof(InformativeModalData.TextBody), "Testing? 1..2..3? Anyone there!?");
 
-            //Modal.Show<InformativeModalData>("Passing Data", parameters);
-        } else if (Type == GameButtonType.Restart)
+                //Modal.Show<InformativeModalData>("Passing Data", parameters);
+            } else if (Type == GameButtonType.Restart)
+            {
+                Controller.ReinitializeGame();
+            } else
+            {
+                await Controller.RequestPassTurnAsync();
+            }
+        } catch (InvalidOperationException e)
         {
-            Controller.ReinitializeGame();
-        } else
-        {
-            Controller.RequestPassTurn();
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(InformativeModalData.TextBody), e.Message);
+
+            Modal.Show<InformativeModalData>("Could Not Carry Out Action", parameters);
         }
+        
 
     }
 }

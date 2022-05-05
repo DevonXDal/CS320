@@ -155,14 +155,14 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             //meldCombinations.Add(setsRemovingDeadwood);
             //meldCombinations.Add(runsRemovingDeadwood);
 
-            foreach (List<IMeld> meldCombination in meldCombinations) // For each meld combination
+            foreach (List<IMeld> meldCombination in meldCombinations.ToList()) // For each meld combination
             {
                 var deadwood = GetRemainingDeadwoodCards(hand, meldCombination); // Get the deadwood cards that can be eliminated
                 RecursivelyIdentifyMeldCombinations(deadwood, meldCombinations, meldCombination); // Recursively identify all possible meld combinations
             }
 
-            int bestMeldForTheJobIndex = -1; // Which meld combination will remove the most deadwood
-            int remainingDeadwoodAmount = -1; // The amount of deadwood that will be eliminated
+            int bestMeldComboForTheJobIndex = -1; // Which meld combination will remove the most deadwood
+            int remainingDeadwoodAmount = int.MaxValue; // The amount of deadwood that will be eliminated
 
             for (int i = 0; i < meldCombinations.Count; i++) // For each meld combination
             {
@@ -170,16 +170,16 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 if (deadwoodAmount < remainingDeadwoodAmount) // If the amount of deadwood is less than the current best
                 {
                     remainingDeadwoodAmount = deadwoodAmount; // Set the new best amount of deadwood
-                    bestMeldForTheJobIndex = i; // Set the index of the best meld combination
+                    bestMeldComboForTheJobIndex = i; // Set the index of the best meld combination
                 }
             }
 
             List<MeldRun> runsUsed = new();
             List<MeldSet> setsUsed = new();
 
-            if (bestMeldForTheJobIndex != -1) // If there was a best meld combination
+            if (bestMeldComboForTheJobIndex != -1) // If there was a best meld combination
             {
-                foreach (IMeld meld in meldCombinations[bestMeldForTheJobIndex]) // For each meld in the best meld combination
+                foreach (IMeld meld in meldCombinations[bestMeldComboForTheJobIndex]) // For each meld in the best meld combination
                 {
                     if (meld is MeldRun) // If the meld is a run
                     {
@@ -229,23 +229,23 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             List<PlayingCard> sortedHandForSetDiscoveries = handCards.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList();
 
             // Index of first card with that rank
-            int firstCardWithRank = -1;
+            int firstCardWithRank = 0;
 
             // Index of last card with that rank
             int lastCardWithRank = -1;
 
             // Previous card's rank
-            Rank previousRank = Rank.Ace;
+            Rank previousRank = sortedHandForSetDiscoveries[0].Rank;
 
-            for (int i = 0; i < handCards.Count; i++) 
+            for (int i = 1; i < sortedHandForSetDiscoveries.Count; i++) 
             {
-                PlayingCard card = handCards[i];
+                PlayingCard card = sortedHandForSetDiscoveries[i];
 
                 if (i == handCards.Count - 1)
                 {
                     // If the current card is the last card in the hand,
                     // then the current card is the last card with that rank
-                    if (handCards[i].Rank == previousRank)
+                    if (sortedHandForSetDiscoveries[i].Rank == previousRank)
                     {
                         lastCardWithRank = i;
                     } else
@@ -260,22 +260,22 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     lastCardWithRank = i - 1;
                 }
 
-                if ((i == handCards.Count - 1 || card.Rank != previousRank && lastCardWithRank != -1) && lastCardWithRank - firstCardWithRank >= 2)
+                if ((i == sortedHandForSetDiscoveries.Count - 1 || card.Rank != previousRank && lastCardWithRank != -1) && lastCardWithRank - firstCardWithRank >= 2)
                 {
                     // If the current card's rank is not the same as the previous card's rank,
                     // and the last card with that rank has been found,
                     // then create a set from the cards with that rank
-                    MeldSet set = (MeldSet) MeldSet.GenerateMeldFromCards((sortedHandForSetDiscoveries.GetRange(firstCardWithRank, firstCardWithRank + 2)));
+                    MeldSet set = (MeldSet) MeldSet.GenerateMeldFromCards((sortedHandForSetDiscoveries.GetRange(firstCardWithRank, 3)));
 
                     if (set != null)
                     {
                         currentSets.Add(set);
 
-                        if (set.CanAddNewCard(handCards[lastCardWithRank]))
+                        if (lastCardWithRank != sortedHandForSetDiscoveries.Count - 1 && set.CanAddNewCard(sortedHandForSetDiscoveries[lastCardWithRank + 1]))
                         {
                             // If the set can be extended with the next card,
                             // then extend the set with the next card
-                            currentSets.Add((MeldSet)set.Insert(handCards[lastCardWithRank]));
+                            currentSets.Add((MeldSet)set.Insert(sortedHandForSetDiscoveries[lastCardWithRank]));
                         }
                     }
 
@@ -300,18 +300,35 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             // Cards for the hand sorted by suit and then rank
             List<PlayingCard> sortedHandForRunDiscoveries = handCards.OrderBy(c => c.Suit).ToList();
-            sortedHandForRunDiscoveries = (new List<PlayingCard>())
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Clubs).ToList())
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Diamonds).ToList())
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Hearts).ToList())
-                .Concat(sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Spades).ToList())
-                .ToList();
+
+            var inbetweenList = new List<PlayingCard>();
+
+            foreach (PlayingCard card in sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Clubs).OrderBy(c => c.Rank).ToList())
+            {
+                inbetweenList.Add(card);
+            }
+
+            foreach (PlayingCard card in sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Diamonds).OrderBy(c => c.Rank).ToList())
+            {
+                inbetweenList.Add(card);
+            }
+
+            foreach (PlayingCard card in sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Hearts).OrderBy(c => c.Rank).ToList())
+            {
+                inbetweenList.Add(card);
+            }
+
+            foreach (PlayingCard card in sortedHandForRunDiscoveries.Where(c => c.Suit == Suit.Spades).OrderBy(c => c.Rank).ToList())
+            {
+                inbetweenList.Add(card);
+            }
+            sortedHandForRunDiscoveries = inbetweenList.ToList();
 
             // The previous card's suit
-            Suit? previousSuit = null;
+            Suit previousSuit = Suit.Clubs; // This and the rank don't matter as they get overwritten first anyways
 
             // The previous card's rank
-            Rank? previousRank = null;
+            Rank previousRank = Rank.Ace;
 
             // Number of cards with the same rank in a row
             int runLength = 0;
@@ -322,62 +339,46 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             // Index of the last card with the same rank
             int lastCardOfRun = -1;
 
-            for (int i = 0; i < handCards.Count; i++)
+            for (int i = 0; i < sortedHandForRunDiscoveries.Count; i++)
             {
-                PlayingCard card = handCards[i];
+                PlayingCard card = sortedHandForRunDiscoveries[i];
 
-                if (i == handCards.Count - 1 && card.Rank == previousRank + 1 && card.Suit == previousSuit)
+                if (i == 0)
                 {
-                    // If the current card is the last card in the hand,
-                    // then the current card is the last card with that rank
+                    previousRank = card.Rank;
+                    previousSuit = card.Suit;
+                    runLength = 1;
+                    firstCardOfRun = i;
                     lastCardOfRun = i;
-                } else if (card.Rank != previousRank + 1 || card.Suit != previousSuit)
+                }
+                else if (card.Rank == Enum.GetValues<Rank>()[(int)previousRank + 1] && card.Suit == previousSuit)
                 {
-                    // If the current card's rank is different than the previous card's rank,
-                    // then the previous card is the last card with that rank
-                    lastCardOfRun = i - 1;
-                } 
-
-                if (lastCardOfRun != -1 && runLength >= 3) // If the last card of the run is found and the run is at least three long
+                    runLength++;
+                    lastCardOfRun = i;
+                }
+                else
                 {
-                    for (int j = firstCardOfRun; j <= lastCardOfRun - 2; j++) // For each possible starting number of a run (3.4.5.6,7); (4,5,6,7), (5,6,7), etc.
+                    if (runLength >= 3)
                     {
-                        // If the current card's rank is not the same as the previous card's rank,
-                        // and the last card with that rank has been found,
-                        // then create a set from the cards with that rank
-                        MeldRun run = (MeldRun)MeldRun.GenerateMeldFromCards((sortedHandForRunDiscoveries.GetRange(j, j + 2)), _isAroundTheWorld);
-                        currentRuns.Add(run);
-
-                        for (int k = j + 3; k <= lastCardOfRun; k++) // Add each possible run combination such as (3,4,5); (3,4,5,6), (3,4,5,6,7), etc.
+                        for (int j = firstCardOfRun; j <= lastCardOfRun - 2; j++) // [1, 2, 3, 4, 5] = {1,2,3,4,5}, {2,3,4,5}, {3,4,5}
                         {
-                            if (run.CanAddNewCard(handCards[k])) // Check if the new card is valid before adding
+                            currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, lastCardOfRun - j)));
+                            for (int k = j + 2; k <= lastCardOfRun - 2; k++) // [1, 2, 3, 4, 5] = {1,2,3}, {1, 2, 3, 4}, {1, 2, 3, 4, 5}, {2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}
                             {
-                                // If the run can be extended with the next card,
-                                // then extend the run with the next card
-                                currentRuns.Add((MeldRun)run.Insert(handCards[k]));
+                                currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, k)));
                             }
                         }
                     }
-                    
 
-                    // Reset the first and last card with that rank
+                    previousRank = card.Rank;
+                    previousSuit = card.Suit;
+                    runLength = 1;
                     firstCardOfRun = i;
-                    lastCardOfRun = -1;
-                } else if (card.Rank != previousRank + 1 || card.Suit != previousSuit)
-                {
-                    // If the current card's rank is not the same as the previous card's rank + 1,
-                    // or the current card's suit is not the same as the previous card's suit,
-                    // then the current card is the first card with the same rank
-                    firstCardOfRun = i;
-                    runLength = 0; // This will get incremented before next iteration.
-                }
-
-                previousRank = card.Rank; // Set the previous rank to the current card's rank
-                previousSuit = card.Suit; // Set the previous suit to the current card's suit
-                runLength++; // Increase the run length by one to show that the current card is part of the run
+                    lastCardOfRun = i;
+                }   
 
             }
-        }
+            }
         
         // This takes in a list of cards to use to find melds, the combinations list to extend, and the list of current melds to locate
         private void RecursivelyIdentifyMeldCombinations(IList<PlayingCard> cardsRemaining, List<List<IMeld>> meldCombinations, List<IMeld> meldCombinationToFurther)
@@ -426,15 +427,33 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             List<PlayingCard> deadwood = originallyRemainingCards.ToList(); // Clone the hand again
 
-            foreach (IMeld meld in meldCombination) // Eliminate cards already used
+            for (int i = 0; i < meldCombination.Count; i++) // Remove cards already used in melds
             {
-                if (deadwood.Count == 0)
-                {
-                    return deadwood;
-                }
+                MeldSet meldSet = meldCombination[i] as MeldSet;
                 
-                // https://stackoverflow.com/questions/3944803/use-linq-to-get-items-in-one-list-that-are-not-in-another-list
-                deadwood.RemoveAll(deadwoodCard => meld.Cards.Any(meldCard => meldCard.Equals(deadwoodCard))); // Remove cards already used in melds
+                if (meldSet == null) 
+                { 
+                    meldCombination.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+
+                for (int j = 0; j < meldSet.Cards.Count; j++)
+                {
+                    if (deadwood.Count == 0)
+                    {
+                        return deadwood;
+                    }
+
+                    for (int k = 0; k < deadwood.Count; k++)
+                    {
+                        if (deadwood[k] == meldSet.Cards[j])
+                        {
+                            deadwood.RemoveAt(k);
+                            break;
+                        }
+                    }
+                }
             }
 
             return deadwood;

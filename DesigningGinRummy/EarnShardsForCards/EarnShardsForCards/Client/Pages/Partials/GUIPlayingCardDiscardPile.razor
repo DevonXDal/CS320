@@ -63,11 +63,11 @@
         }
     }
 
-    public void HandleDrop()
+    public async Task HandleDrop()
     {
         try
         {
-            Controller.RequestDiscardWithCardAt(Controller.SelectedCardIndex);
+            await Controller.RequestDiscardWithCardAtAsync(Controller.SelectedCardIndex);
         } catch (InvalidOperationException e)
         {
             ModalParameters parameters = new ModalParameters();
