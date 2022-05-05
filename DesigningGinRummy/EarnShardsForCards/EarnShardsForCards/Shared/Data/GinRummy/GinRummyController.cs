@@ -237,6 +237,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             {
                 cardBeingUsedForAttemptedKnock.Hide();
                 _board.DiscardPile.Add(cardBeingUsedForAttemptedKnock);
+                foreach (var card in _board.ComputerPlayer.Hand)
+                {
+                    card.Show(); // Ensure all cards are shown
+                }
                 _notifier.SendNotice(); // Update the view
 
                 _scoreHandler.RewardPoints(false, _board.Player);
@@ -397,10 +401,20 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             if (_gameState.CurrentPlayersTurn == TurnState.Human && _scoreHandler.DoesPlayerHaveBigGin(_board.Player))
             {
+                foreach (var card in _board.ComputerPlayer.Hand)
+                {
+                    card.Show(); // Ensure all cards are shown
+                }
+                _notifier.SendNotice();
                 _scoreHandler.RewardPoints(true, _board.Player);
             }
             else if (_gameState.CurrentPlayersTurn == TurnState.Computer && _scoreHandler.DoesPlayerHaveBigGin(_board.ComputerPlayer))
             {
+                foreach (var card in _board.ComputerPlayer.Hand)
+                {
+                    card.Show(); // Ensure all cards are shown
+                }
+                _notifier.SendNotice();
                 _scoreHandler.RewardPoints(true, _board.ComputerPlayer);
             }
         }
@@ -479,7 +493,13 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             {
                 _gameState.PointsForHumanPlayerPerRound.Add(0);
                 _gameState.PointsForComputerPlayerPerRound.Add(0);
+                foreach (var card in _board.ComputerPlayer.Hand)
+                {
+                    card.Show(); // Ensure all cards are shown
+                }
+                
                 _needDisplayEndOfRound = true;
+                _notifier.SendNotice();
             }
         }
 
@@ -543,6 +563,12 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 computerPlayer.Hand.Remove(possibleCardToKnock); // Remove the card from the computer's hand
                 possibleCardToKnock.Hide(); // Ensure the card is hidden so it is face down on the discard pile.
                 _board.DiscardPile.Add(possibleCardToKnock); // Add the card to the discard pile
+                
+
+                foreach (var card in computerPlayer.Hand)
+                {
+                    card.Show(); // Ensure all cards are shown
+                }
                 _notifier.SendNotice();
 
                 _scoreHandler.RewardPoints(false, computerPlayer);

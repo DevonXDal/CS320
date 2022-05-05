@@ -50,7 +50,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             EliminateDeadwoodData deadwoodDataForREPlayer; // Round ending player data
             EliminateDeadwoodData deadwoodDataForNREPlayer; // Non-round ending player data
-            Player<PlayingCard> nonRoundEndingPlayer = (roundEndingPlayer == _humanPlayer) ? _computerPlayer : _humanPlayer;
+            Player<PlayingCard> nonRoundEndingPlayer = (roundEndingPlayer == _humanPlayer) ? _computerPlayer : _humanPlayer;         
 
             bool isGinOfAnyForm = isBigGin;
 
@@ -351,7 +351,12 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     firstCardOfRun = i;
                     lastCardOfRun = i;
                 }
-                else if (card.Rank == Enum.GetValues<Rank>()[(int)previousRank + 1] && card.Suit == previousSuit)
+                else if (!(previousRank == Rank.King) && card.Rank == Enum.GetValues<Rank>()[(int)previousRank + 1] && card.Suit == previousSuit)
+                {
+                    runLength++;
+                    lastCardOfRun = i;
+                }
+                else if (_isAroundTheWorld && card.Rank == Rank.Ace && card.Suit == previousSuit && previousRank == Rank.King)
                 {
                     runLength++;
                     lastCardOfRun = i;
@@ -362,10 +367,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     {
                         for (int j = firstCardOfRun; j <= lastCardOfRun - 2; j++) // [1, 2, 3, 4, 5] = {1,2,3,4,5}, {2,3,4,5}, {3,4,5}
                         {
-                            currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, lastCardOfRun - j)));
+                            currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, lastCardOfRun - j), _isAroundTheWorld));
                             for (int k = j + 2; k <= lastCardOfRun - 2; k++) // [1, 2, 3, 4, 5] = {1,2,3}, {1, 2, 3, 4}, {1, 2, 3, 4, 5}, {2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}
                             {
-                                currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, k)));
+                                currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, k), _isAroundTheWorld));
                             }
                         }
                     }
@@ -375,11 +380,25 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     runLength = 1;
                     firstCardOfRun = i;
                     lastCardOfRun = i;
-                }   
+                }
 
+                if (i == sortedHandForRunDiscoveries.Count - 1 && runLength >= 3)
+                {
+
+                    for (int j = firstCardOfRun; j <= lastCardOfRun - 2; j++) // [1, 2, 3, 4, 5] = {1,2,3,4,5}, {2,3,4,5}, {3,4,5}
+                    {
+                        currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, lastCardOfRun - j), _isAroundTheWorld));
+                        for (int k = j + 2; k <= lastCardOfRun - 2; k++) // [1, 2, 3, 4, 5] = {1,2,3}, {1, 2, 3, 4}, {1, 2, 3, 4, 5}, {2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5}
+                        {
+                            currentRuns.Add((MeldRun)MeldRun.GenerateMeldFromCards(sortedHandForRunDiscoveries.GetRange(j, k), _isAroundTheWorld));
+                        }
+                    }
+
+                }
             }
-            }
-        
+        }
+            
+
         // This takes in a list of cards to use to find melds, the combinations list to extend, and the list of current melds to locate
         private void RecursivelyIdentifyMeldCombinations(IList<PlayingCard> cardsRemaining, List<List<IMeld>> meldCombinations, List<IMeld> meldCombinationToFurther)
         {
@@ -421,6 +440,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 }
             }
         }
+                   
 
         // Get remaining deadwood cards
         private List<PlayingCard> GetRemainingDeadwoodCards(IList<PlayingCard> originallyRemainingCards, IList<IMeld> meldCombination)
