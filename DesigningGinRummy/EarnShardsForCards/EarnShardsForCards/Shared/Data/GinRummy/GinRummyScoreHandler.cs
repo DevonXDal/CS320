@@ -245,7 +245,14 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 {
                     // If the current card is the last card in the hand,
                     // then the current card is the last card with that rank
-                    lastCardWithRank = i;
+                    if (handCards[i].Rank == previousRank)
+                    {
+                        lastCardWithRank = i;
+                    } else
+                    {
+                        lastCardWithRank = i - 1;
+                    }
+                    
                 } else if (card.Rank != previousRank)
                 {
                     // If the current card's rank is different than the previous card's rank,
@@ -259,13 +266,17 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     // and the last card with that rank has been found,
                     // then create a set from the cards with that rank
                     MeldSet set = (MeldSet) MeldSet.GenerateMeldFromCards((sortedHandForSetDiscoveries.GetRange(firstCardWithRank, firstCardWithRank + 2)));
-                    currentSets.Add(set);
 
-                    if (set.CanAddNewCard(handCards[lastCardWithRank]))
+                    if (set != null)
                     {
-                        // If the set can be extended with the next card,
-                        // then extend the set with the next card
-                        currentSets.Add((MeldSet) set.Insert(handCards[lastCardWithRank]));
+                        currentSets.Add(set);
+
+                        if (set.CanAddNewCard(handCards[lastCardWithRank]))
+                        {
+                            // If the set can be extended with the next card,
+                            // then extend the set with the next card
+                            currentSets.Add((MeldSet)set.Insert(handCards[lastCardWithRank]));
+                        }
                     }
 
                     // Reset the first and last card with that rank
@@ -315,7 +326,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             {
                 PlayingCard card = handCards[i];
 
-                if (i == handCards.Count - 1)
+                if (i == handCards.Count - 1 && card.Rank == previousRank + 1 && card.Suit == previousSuit)
                 {
                     // If the current card is the last card in the hand,
                     // then the current card is the last card with that rank
@@ -325,7 +336,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                     // If the current card's rank is different than the previous card's rank,
                     // then the previous card is the last card with that rank
                     lastCardOfRun = i - 1;
-                }
+                } 
 
                 if (lastCardOfRun != -1 && runLength >= 3) // If the last card of the run is found and the run is at least three long
                 {
@@ -417,6 +428,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
 
             foreach (IMeld meld in meldCombination) // Eliminate cards already used
             {
+                if (deadwood.Count == 0)
+                {
+                    return deadwood;
+                }
+                
                 // https://stackoverflow.com/questions/3944803/use-linq-to-get-items-in-one-list-that-are-not-in-another-list
                 deadwood.RemoveAll(deadwoodCard => meld.Cards.Any(meldCard => meldCard.Equals(deadwoodCard))); // Remove cards already used in melds
             }

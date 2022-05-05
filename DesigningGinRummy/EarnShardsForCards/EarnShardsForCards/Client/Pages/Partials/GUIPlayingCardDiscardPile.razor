@@ -4,7 +4,7 @@
 
 @inherits SubscriberComponent
 
-<div style="position: relative; text-align: center" ondblclick="@(()=> HandleDoublePress())">
+<div style="position: relative; text-align: center" ondragover="event.preventDefault();" draggable="false" ondrop="@(() => HandleDrop())" ondblclick="@(()=> HandleDoublePress())">
     @* https://stackoverflow.com/questions/26148740/how-to-add-text-over-the-image-in-bootstrap *@
     <img src="@_discardPileImageFilePath" class="img-fluid" style="align-self: center" />
 </div>
@@ -60,6 +60,20 @@
             parameters.Add(nameof(InformativeModalData.TextBody), e.Message);
 
             Modal.Show<InformativeModalData>("Could not Draw from the Discard Pile", parameters);
+        }
+    }
+
+    public void HandleDrop()
+    {
+        try
+        {
+            Controller.RequestDiscardWithCardAt(Controller.SelectedCardIndex);
+        } catch (InvalidOperationException e)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(InformativeModalData.TextBody), e.Message);
+
+            Modal.Show<InformativeModalData>("Could not Discard That Card", parameters);
         }
     }
 }

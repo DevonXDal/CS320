@@ -69,6 +69,7 @@
     void StartDrag(string cardInList)
     {
         currentIndex = GetIndex(cardInList);
+        Controller.SelectedCardIndex = currentIndex;
     }
 
     void ClickCardInList(string cardInList)

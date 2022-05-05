@@ -21,6 +21,8 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
     /// </summary>
     public class GinRummyController : IGinRummyController
     {
+        public int SelectedCardIndex { get; set; }
+
         private GinRummyBoard? _board;
         private GinRummyScoreHandler? _scoreHandler;
         private GinRummyGameState? _gameState;
@@ -109,8 +111,14 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             }
             else
             {
+                if (wasThereAPreviousPassThisRound)
+                {
+                    _gameState.IsSpecialDraw = false;
+                } else {
+                    wasThereAPreviousPassThisRound = true;
+                }
+                
                 _gameState.CurrentPlayersTurn = TurnState.Computer;
-                wasThereAPreviousPassThisRound = true;
                 _notifier.SendNotice(); // Update the view
                 HandleComputersTurnAsync();
             }
@@ -165,11 +173,10 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             }
             else
             {
-                PlayingCard drawnCard = _board.Deck.Draw();
-                drawnCard.Show();
-                _board.Player.Insert(_board.Player.Count(), drawnCard);
+                _board.Player.Insert(_board.Player.Count(), _board.DiscardPile.Draw());
 
                 _gameState.CurrentTurnPhase = PhaseState.Discard;
+                _gameState.IsSpecialDraw = false;
                 _notifier.SendNotice(); // Update the view
 
                 CheckForBigGin();
@@ -187,19 +194,20 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             {
                 throw new InvalidOperationException("You cannot draw cards from the discard pile during the opponent's turn");
             }
-            else if (_gameState.CurrentTurnPhase == PhaseState.Discard)
+            else if (_gameState.CurrentTurnPhase != PhaseState.Discard)
             {
-                throw new InvalidOperationException("You cannot draw from the discard pile right now, you must choose a card to discard or knock");
+                throw new InvalidOperationException("You cannot discard a card during your draw phase");
             }
             else
             {
-                PlayingCard drawnCard = _board.DiscardPile.Draw();
-                _board.Player.Insert(_board.Player.Count(), drawnCard);
+                _board.DiscardPile.Add(_board.Player.RemoveAt(index));
 
-                _gameState.CurrentTurnPhase = PhaseState.Discard;
-                _gameState.IsSpecialDraw = false;
+                _gameState.CurrentPlayersTurn = TurnState.Computer;
+                _gameState.CurrentTurnPhase = PhaseState.Draw;
+                
                 
                 _notifier.SendNotice(); // Update the view
+                HandleComputersTurnAsync();
             }
         }
 
@@ -388,6 +396,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         {
             wasThereAPreviousPassThisRound = false;
             _gameState.IsSpecialDraw = true;
+            _gameState.RoundNumber++;
         }
 
         /// <summary>

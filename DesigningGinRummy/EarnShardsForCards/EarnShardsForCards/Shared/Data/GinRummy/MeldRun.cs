@@ -83,6 +83,11 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             // If any of the cards have a rank that is not one higher than the card before it, return null
             foreach (var current in orderedCards)
             {
+                if (orderedCards.IndexOf(current) == 0)
+                {
+                    continue;
+                }
+                
                 PlayingCard previous = orderedCards.ElementAt(orderedCards.IndexOf(current) - 1);
 
                 if (current.Rank != previous.Rank + 1 && previous.Rank != Rank.King)

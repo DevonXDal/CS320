@@ -40,7 +40,7 @@ namespace EarnShardsForCards.Shared.Data.GenericGameObjects
                 card.Show();
             }
             
-            Cards.Add(card);
+            Cards.Insert(Cards.Count, card);
         }
 
         /// <summary>
