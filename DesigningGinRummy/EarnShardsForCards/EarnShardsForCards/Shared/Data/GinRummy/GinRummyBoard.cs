@@ -20,7 +20,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
     {
         public GinRummyComputerPlayer<PlayingCard> ComputerPlayer { get; private set; }
         public Player<PlayingCard> Player { get; private set; }
-        public PlayingCardDeck<PlayingCard> Deck { get; private set; }
+        public PlayingCardDeck<PlayingCard> Deck { get; set; }
         public DiscardPile<PlayingCard> DiscardPile { get; private set; }
 
         /// <summary>
@@ -31,14 +31,14 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             ComputerPlayer = new GinRummyComputerPlayer<PlayingCard>(config, controller);
             Player = new Player<PlayingCard>();
 
-            Deck = new PlayingCardDeck<PlayingCard>(RefreshDeck());
+            Deck = RefreshDeck();
             DiscardPile = new DiscardPile<PlayingCard>();
         }
 
         /// <summary>
         /// Loads the deck with a fresh set of cards, will be removed with a deck factory when able
         /// </summary>
-        public static IList<PlayingCard> RefreshDeck()
+        public static PlayingCardDeck<PlayingCard> RefreshDeck()
         {
             List<PlayingCard> cards = new();
             
@@ -58,7 +58,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
                 }
             }
 
-            return cards;
+            return new PlayingCardDeck<PlayingCard>(cards);
         }
     }
 }

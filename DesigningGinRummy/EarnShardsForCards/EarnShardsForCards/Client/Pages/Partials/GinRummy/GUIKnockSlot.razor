@@ -4,9 +4,10 @@
 
 @inherits SubscriberComponent
 
-<div style="position: relative; text-align: center" ondragover="event.preventDefault();" draggable="false" ondrop="@(() => HandleDrop())" ondblclick="@(()=> HandleDoublePress())">
+<div style="position: relative; text-align: center; align-self: center; max-width: 50% !important;" ondragover="event.preventDefault();" draggable="false" ondrop="@(() => HandleDrop())">
     @* https://stackoverflow.com/questions/26148740/how-to-add-text-over-the-image-in-bootstrap *@
-    <img src="@_discardPileImageFilePath" class="img-fluid" style="align-self: center" />
+    <img src="img/No-Card.webp" class="img-fluid" style="align-self: center" />
+    <p class="general-game-text" style="font-size: 0.5em; font-weight: bolder">Drag Here to Knock</p>
 </div>
 
 
@@ -22,8 +23,6 @@
     private TurnState? _turnState;
 
     private PhaseState? _phaseState;
-
-    private string? _discardPileImageFilePath;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,8 +42,6 @@
     {
         var viewData = Controller.FetchViewData();
 
-        _discardPileImageFilePath = viewData.DiscardPileImageFilePath;
-
         _turnState = viewData.CurrentTurn;
         _phaseState = viewData.CurrentPhase;
     }
@@ -53,13 +50,13 @@
     {
         try
         {
-            Controller.RequestDiscardWithCardAt(Controller.SelectedCardIndex);
+            Controller.RequestKnockWithCardAt(Controller.SelectedCardIndex);
         } catch (InvalidOperationException e)
         {
             ModalParameters parameters = new ModalParameters();
             parameters.Add(nameof(InformativeModalData.TextBody), e.Message);
 
-            Modal.Show<InformativeModalData>("Could not Discard That Card", parameters);
+            Modal.Show<InformativeModalData>("Could not Knock That Card", parameters);
         }
     }
 }

@@ -218,11 +218,32 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         /// <exception cref="InvalidOperationException">Thrown with a message why the action was not done when an illegal action occured</exception>
         public void RequestKnockWithCardAt(int index)
         {
+            if (_gameState.CurrentPlayersTurn != TurnState.Human)
+            {
+                throw new InvalidOperationException("You cannot knock during the opponent's turn");
+            } else if (_gameState.CurrentTurnPhase != PhaseState.Discard)
+            {
+                throw new InvalidOperationException("You must perform your knocks during the discard phase");
+            }
+
+            if (index < 0 || index >= _board.Player.Count())
+            {
+                throw new InvalidOperationException("You can't knock with a card that doesn't exist");
+            }
+
             PlayingCard cardBeingUsedForAttemptedKnock = _board.Player.RemoveAt(index);
 
             if (_scoreHandler.CanPlayerKnock(_board.Player))
             {
-                
+                cardBeingUsedForAttemptedKnock.Hide();
+                _board.DiscardPile.Add(cardBeingUsedForAttemptedKnock);
+                _notifier.SendNotice(); // Update the view
+
+                _scoreHandler.RewardPoints(false, _board.Player);
+            } else
+            {
+                _board.Player.Insert(index, cardBeingUsedForAttemptedKnock);
+                throw new InvalidOperationException("You can only knock if doing so would leave you with ten or less deadwood");
             }
         }
 
@@ -362,7 +383,7 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
             scoreboardData.Add(_gameState.PointsForHumanPlayerPerRound);
             scoreboardData.Add(_gameState.PointsForComputerPlayerPerRound);
 
-            return new(_previousRoundEndingCase, scoreboardData, _gameState.CheckIfGameIsWon() != 0, _laidOffDeadwoodPreviously);
+            return new(_previousRoundEndingCase, scoreboardData, _gameState.CheckIfGameIsWon() != 0, _laidOffDeadwoodPreviously, _gameState.PointsRequiredForWin);
         }
 
         /// <summary>
@@ -395,6 +416,29 @@ namespace EarnShardsForCards.Shared.Data.GinRummy
         public void SetupNextRound()
         {
             wasThereAPreviousPassThisRound = false;
+            _gameState.IsSpecialDraw = true;
+           
+
+            _board.Deck = GinRummyBoard.RefreshDeck();
+            _board.Deck.Shuffle();
+            _board.DiscardPile.Clear();
+            
+            _board.Player.Clear();
+            _board.ComputerPlayer.Clear();
+
+            if (_gameState.PointsForHumanPlayerPerRound[_gameState.RoundNumber] > 0)
+            {
+                _gameState.CurrentPlayersTurn = TurnState.Computer;
+            } else if (_gameState.PointsForComputerPlayerPerRound[_gameState.RoundNumber] > 0)
+            {
+                _gameState.CurrentPlayersTurn = TurnState.Human;
+            } else // Tie round
+            {
+                // Whoever is next to play gets to go next
+                _gameState.CurrentPlayersTurn = (_gameState.CurrentPlayersTurn == TurnState.Human) ? TurnState.Computer : TurnState.Human;
+            }
+
+            _gameState.CurrentTurnPhase = PhaseState.Draw;
             _gameState.IsSpecialDraw = true;
             _gameState.RoundNumber++;
         }

@@ -39,8 +39,8 @@
         <GUIGameButton Controller="_controller" Type="GameButtonType.Restart"></GUIGameButton>
     </div>
     
-    <div class="row">
-        <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 95vh; width: 100%"> 
+    <div class="row" style="@_darkenCSS">
+        <div class="col-12" id="loaded-game-board" style="background-color: #103232; height: 120vh; width: 100%"> 
             <div class="row">
                 <GUIHand Controller="_controller" IsHumanPlayerHand="false" Notifier="_gameUpdateNotifier"></GUIHand>
             </div>
@@ -55,7 +55,7 @@
 
                     <li class="list-inline-item col-md-5 col-4 my-1"></li>
 
-                    <li class="list-inline-item col-md-1 col-2 my-1">
+                    <li class="list-inline-item col-md-1 col-2 my-1" style="align-items: center">
                         <GUIPlayingCardDeck Controller="_controller" Notifier="_gameUpdateNotifier"></GUIPlayingCardDeck>
                     </li> 
                     
@@ -64,6 +64,19 @@
                     </li>
 
                     <li class="list-inline-item col-md-5 col-4 my-1"></li>                    
+                      
+                </ul>
+            </div>
+            <div class="row">
+                <ul class="list-inline row align-content-around" style="list-style: none">
+
+                    <li class="list-inline-item col-md-5 col-5 my-1"></li>
+
+                    <li class="list-inline-item col-md-2 col-2 my-1">
+                        <GUIKnockSlot Controller="_controller" Notifier="_gameUpdateNotifier"></GUIKnockSlot>
+                    </li>        
+
+                    <li class="list-inline-item col-md-5 col-5 my-1"></li>                    
                       
                 </ul>
             </div>
@@ -207,6 +220,8 @@
 
     private string? _turnPhaseIndicator;
 
+    private string? _darkenCSS;
+
     /// <summary>
     /// Configure the starting state of the page with the board darkened, three dropdowns, a start game button, and information below on how to play.
     /// </summary>
@@ -243,9 +258,12 @@
         if (_viewData.CurrentTurn == TurnState.Human)
         {
             turnString = "Your ";
+            // https://til.hashrocket.com/posts/4jhm8rrq7c-lighten-and-darken-with-css-brightness-filter - Darkening
+            _darkenCSS = "filter: brightness(100%);";
         } else
         {
             turnString = "Opponent's ";
+            _darkenCSS = "filter: brightness(60%);";
         }
 
 

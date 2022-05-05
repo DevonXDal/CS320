@@ -18,6 +18,7 @@ namespace EarnShardsForCards.Shared.Data.Records
         public IList<IList<int>> RoundScores { get; init; } // User and then computer
         public bool WinConditionReached { get; init; }
         public int LaidOffDeadwood { get; init; }
+        public int AmountToWin { get; init; }
 
         /// <summary>
         /// Creates a record for the end of round data to display to the user.
@@ -26,12 +27,14 @@ namespace EarnShardsForCards.Shared.Data.Records
         /// <param name="roundScores">Scores from user then the computer for each round</param>
         /// <param name="isGameWon">Has someone won the game</param>
         /// <param name="laidOffDeadwood">How much deadwood was laid off if any (0 if not knock or undercut)</param>
-        public EndOfRoundData(GinRummyRoundEndingCase roundEndingReason, IList<IList<int>> roundScores, bool isGameWon, int laidOffDeadwood)
+        /// <param name="amountToWin">How much is needed to win the game</param>
+        public EndOfRoundData(GinRummyRoundEndingCase roundEndingReason, IList<IList<int>> roundScores, bool isGameWon, int laidOffDeadwood, int amountToWin)
         {
             RoundEndingReason = roundEndingReason;
             RoundScores = roundScores;
             WinConditionReached = isGameWon;
             LaidOffDeadwood = laidOffDeadwood;
+            AmountToWin = amountToWin;
         }
 
     }
